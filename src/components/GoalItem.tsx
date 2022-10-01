@@ -14,7 +14,7 @@ const ItemBody = styled.div`
   grid-template-columns: 30px 1fr 20% 25% 30px;
   align-items: center;
   border-bottom: 1px solid ${({theme}) => theme.bgSecondary};
-  padding: 7px 0;
+  padding: 7px;
   transition: all .3s;
 
   &:hover {
@@ -113,7 +113,7 @@ type Props = {
     goal: Goal;
 }
 
-export const ListItem: React.FC<Props> = ({goal}) => {
+export const GoalItem: React.FC<Props> = ({goal}) => {
     return (
         <ItemBody>
             <Status {...goal}/>

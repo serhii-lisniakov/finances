@@ -6,7 +6,6 @@ export const Container = styled.div`
 `;
 
 export const Card = styled.div<{ corners?: number[] }>`
-  padding: 1em;
   border-radius: 25px;
   box-shadow: 0 0 35px -10px rgba(0, 0, 0, 0.75);
   background: ${({theme}) => theme.bgPrimary};
@@ -24,4 +23,19 @@ export const FlexContainer = styled.div`
   align-items: center;
   gap: 10px;
   justify-content: stretch;
+`;
+
+export const FlexContainerColumn = styled(FlexContainer)`
+  flex-direction: column;
+`;
+
+export const Label = styled.label`
+  text-transform: capitalize;
+`;
+
+export const List = styled.div`
+  margin: 1em 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 `;

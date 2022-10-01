@@ -1,23 +1,25 @@
 import React from "react";
 import {Header} from "./Header";
 import {Container} from "./components";
-import {List} from "./List";
+import {Goals} from "./Goals";
 import {Info} from "./Info";
 import {Timeline} from "./Timeline";
 import styled from "styled-components";
 import {Total} from "./Total";
 
 const StyledContainer = styled(Container)`
+  padding: 10px;
   display: grid;
   gap: 1em;
-  height: 100%;
+  height: 100vh;
   grid-template: auto 1fr / 1fr;
 `;
 
 const Body = styled.div`
   display: grid;
   gap: 1em;
-  grid-template: 1fr / 1fr 25% 20%;
+  grid-template: minmax(300px, 1fr) / 1fr 30% 20%;
+  overflow: auto;
 `;
 
 const InfoSection = styled.div`
@@ -30,7 +32,7 @@ export const Layout = () => {
         <StyledContainer>
             <Header/>
             <Body>
-                <List/>
+                <Goals/>
                 <InfoSection>
                     <Info/>
                     <Total/>

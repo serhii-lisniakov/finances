@@ -3,6 +3,7 @@ import themeReducer from "./themeSlice";
 import goalsReducer from "./goalsSlice";
 import currencyReducer from "./currencySlice";
 import balancesReducer from "./balancesSlice";
+import creditsReducer from "./creditsSlice";
 
 export const store = configureStore({
     reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
         goals: goalsReducer,
         currency: currencyReducer,
         balances: balancesReducer,
+        credits: creditsReducer,
     },
 })
 

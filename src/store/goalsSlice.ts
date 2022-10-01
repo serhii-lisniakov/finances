@@ -3,12 +3,7 @@ import {Goal} from "../models/Goal";
 import {GoalStatus} from "../enums/GoalStatus";
 import {LocalStorage} from "../enums/LocalStorage";
 import {RootState} from "./index";
-
-type PutGoal = {
-    id: number;
-    value: any;
-    property: keyof Goal;
-}
+import {PutEntity} from "../models/PutEntity";
 
 type PutStatus = {
     id: number;
@@ -80,7 +75,7 @@ const goalsSlice = createSlice({
     name: 'goals',
     initialState,
     reducers: {
-        updateGoal: (state, {payload}: PayloadAction<PutGoal>) => {
+        updateGoal: (state, {payload}: PayloadAction<PutEntity<Goal>>) => {
             const goal = state.goals.find(g => g.id === payload.id);
             if (goal) {
                 goal[payload.property] = payload.value as never

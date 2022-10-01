@@ -14,7 +14,7 @@ const Currency: React.FC<Props> = () => {
     }, [dispatch])
 
     return (
-        <Highlighter>
+        <Highlighter bg={'accent'}>
             1 {currency} = {+price.toFixed(2)} UAH
         </Highlighter>
     )

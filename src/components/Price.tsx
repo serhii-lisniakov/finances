@@ -1,14 +1,14 @@
 import React, {PropsWithChildren} from "react";
 import {useAppSelector} from "../hooks/useStore";
 import styled from "styled-components";
-import {getFormattedPrice, getPriceInUAH} from "../helpers/functions";
+import {getFormattedPrice, getPriceInCurrency, getPriceInUAH} from "../helpers/functions";
 
 const StyledPrice = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
   margin-right: 10px;
-  
+
   > :first-child {
     margin-left: 7px;
   }
@@ -19,24 +19,29 @@ const StyledCurrency = styled.span`
   text-align: right;
   position: relative;
   top: -2px;
-  color: #878787;
+  color: ${({theme}) => theme.currency};
 `;
 
 type Props = {
     value: number;
     useUAH?: boolean;
+    readOnly?: boolean;
+    isSum?: boolean;
 }
 
-export const Price: React.FC<Props & PropsWithChildren> = ({value, children, useUAH}) => {
-    const {currency: appCurrency} = useAppSelector(state => state.currency);
-    const {price: currencyPrice} = useAppSelector(state => state.currency);
+export const Price: React.FC<Props & PropsWithChildren> = (props) => {
+    const {value, children, useUAH, readOnly, isSum} = props;
+    const {currency: appCurrency, price: currencyPrice} = useAppSelector(state => state.currency);
+
+    const getValue = () => {
+        const isUAH = useUAH ? getPriceInUAH(value, currencyPrice) : getPriceInCurrency(value, currencyPrice);
+        return getFormattedPrice(readOnly ? +value : +isUAH);
+    }
 
     return (
         <StyledPrice>
-            {children
-                ? children
-                : getFormattedPrice(getPriceInUAH(value, currencyPrice))
-            }
+            {isSum && <StyledCurrency style={{margin: '0 3px 0 0'}}>Σ</StyledCurrency>}
+            {children ? children : getValue()}
             <StyledCurrency>{useUAH ? 'UAH' : appCurrency}</StyledCurrency>
         </StyledPrice>
     )

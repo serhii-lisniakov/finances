@@ -4,6 +4,7 @@ import {RootState} from "./index";
 
 export type BalancesState = {
     income: number;
+    invest: number;
     rest: number;
     crypto: number;
     bank: number;
@@ -17,6 +18,7 @@ type UpdateBalance = {
 
 const initialState: BalancesState = {
     income: 0,
+    invest: 0,
     rest: 0,
     crypto: 0,
     bank: 0,

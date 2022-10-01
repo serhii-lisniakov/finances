@@ -7,6 +7,7 @@ import styled from "styled-components";
 const StyledCard = styled(Card)`
   display: flex;
   justify-content: space-between;
+  padding: 1em;
 `;
 
 export const Header = () => {

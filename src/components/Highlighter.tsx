@@ -1,23 +1,33 @@
-import React, {HTMLAttributes, memo} from "react";
+import React, {memo, PropsWithChildren} from "react";
 import styled from "styled-components";
-
-const StyledHighlighter = styled.span<Props>`
-  display: inline-block;
-  padding: 3px 5px;
-  border-radius: 10px;
-  background: ${({accent}) => accent ? '#3b70eb' : '#ff5497'};
-  color: white;
-  letter-spacing: 1px;
-`
+import {Backgrounds} from "../models/Backgrounds";
 
 type Props = {
-    accent?: boolean;
+    bg?: Backgrounds;
 }
 
-const Highlighter: React.FC<Props & HTMLAttributes<HTMLSpanElement>> = ({accent, children}) => (
-    <StyledHighlighter accent={accent}>
-        {children}
-    </StyledHighlighter>
-)
+const StyledHighlighter = styled.span<Props>`
+  display: inline-flex;
+  justify-content: center;
+  padding: 3px 5px;
+  border-radius: 10px;
+  background: ${({theme, bg}) => theme.backgrounds[bg || 'primary']};
+  color: white;
+  letter-spacing: 1px;
+
+  *:not(input) {
+    color: white;
+  }
+`;
+
+const Highlighter: React.FC<Props & PropsWithChildren> = (props) => {
+    const {children, ...nextProps} = props;
+
+    return (
+        <StyledHighlighter {...nextProps}>
+            {children}
+        </StyledHighlighter>
+    )
+}
 
 export default memo(Highlighter);

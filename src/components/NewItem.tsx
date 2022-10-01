@@ -1,6 +1,5 @@
 import React, {memo, useState} from "react";
 import {useAppDispatch} from "../hooks/useStore";
-import {addGoal} from "../store/goalsSlice";
 import styled from "styled-components";
 import {Button} from "./Button";
 import {Input} from "./Input";
@@ -10,15 +9,17 @@ const Wrapper = styled.div`
   gap: 10px;
 `;
 
-type Props = {}
+type Props = {
+    dispatcher: any;
+}
 
-const NewGoal: React.FC<Props> = () => {
+const NewItem: React.FC<Props> = ({dispatcher}) => {
     const [value, setValue] = useState<string>('');
     const dispatch = useAppDispatch();
 
     const add = () => {
         if (value?.trim()) {
-            dispatch(addGoal(value));
+            dispatch(dispatcher(value));
             setValue('');
         }
     }
@@ -26,7 +27,7 @@ const NewGoal: React.FC<Props> = () => {
     return (
         <Wrapper>
             <Input
-                placeholder='Add new goal...'
+                placeholder='Add new...'
                 value={value}
                 onChange={(e) => setValue(e.currentTarget.value)}
                 onEnterPress={add}
@@ -36,4 +37,4 @@ const NewGoal: React.FC<Props> = () => {
     )
 }
 
-export default memo(NewGoal);
+export default memo(NewItem);

@@ -6,20 +6,19 @@ export const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
     font-family: inherit;
   }
-  
+
   * :before, * :after {
     box-sizing: border-box;
   }
-  
+
   html {
     font-size: 14px;
-    min-height: 100%;
   }
-  
+
   #root {
     height: 100%;
   }
-  
+
   ::placeholder {
     color: inherit;
   }
@@ -34,17 +33,16 @@ export const GlobalStyles = createGlobalStyle`
     background: ${({theme}) => theme.background};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    padding: 10px;
     color: ${({theme}) => theme.colorPrimary};
+  }
 
-    &::-webkit-scrollbar {
-      background: ${({theme}) => theme.background};
-      width: 0.4em;
-    }
+  ::-webkit-scrollbar {
+    background: ${({theme}) => theme.hover};
+    width: 4px;
+  }
 
-    ::-webkit-scrollbar-thumb {
-      background-color: ${({theme}) => theme.scrollBar};
-    }
+  ::-webkit-scrollbar-thumb {
+    background-color: ${({theme}) => theme.colorPrimary};
   }
 
   img {

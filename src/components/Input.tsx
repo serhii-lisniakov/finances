@@ -6,7 +6,7 @@ const mixin = css`
   padding: 4px 7px;
   background: none;
   width: 100%;
-  color: ${({theme}) => theme.colorPrimary};
+  color: inherit;
 `;
 
 const StyledInput = styled.input<{ justifyRight?: boolean }>`
@@ -19,7 +19,7 @@ const StyledInput = styled.input<{ justifyRight?: boolean }>`
   text-align: ${({justifyRight}) => justifyRight ? 'right' : 'left'};
   ${mixin};
   transition: all .3s;
-  
+
   &:focus {
     background: ${({theme}) => theme.background};
   }
@@ -33,15 +33,15 @@ const WithoutBorders = styled(StyledInput)`
   }
 `;
 
-const CurrencyWrapper = styled.span`
+const CurrencyWrapper = styled.span<{ readOnly?: boolean }>`
   position: relative;
-  
+
   &:focus-within {
     :after {
       visibility: hidden;
     }
   }
-  
+
   &:after {
     content: attr(data-value);
     position: absolute;
@@ -50,14 +50,33 @@ const CurrencyWrapper = styled.span`
     left: 0;
     top: 0;
     pointer-events: none;
-    ${mixin}
+    ${mixin};
   }
+
+  &:before {
+    content: '';
+    position: absolute;
+    height: 0.5px;
+    width: 20px;
+    right: -21px;
+    bottom: 9px;
+    background: green;
+    visibility: hidden;
+  }
+
+  ${({readOnly}) => readOnly ? css`
+    pointer-events: none;
+  ` : css`
+    &:before {
+      visibility: visible;
+    }
+  `}
 `;
 
 const Currency = styled(WithoutBorders)`
   color: transparent;
   letter-spacing: 0.75px;
-  
+
   &:focus {
     color: inherit;
   }
@@ -89,7 +108,10 @@ export const Input: React.FC<Props & InputHTMLAttributes<HTMLInputElement>> = (p
 
     if (maskCurrency) {
         return (
-            <CurrencyWrapper data-value={getFormattedPrice(props.value as number)}>
+            <CurrencyWrapper
+                data-value={getFormattedPrice(props.value as number)}
+                readOnly={props.readOnly}
+            >
                 <Currency {...nextProps}/>
             </CurrencyWrapper>
         )
