@@ -1,13 +1,13 @@
 import styled, {css} from "styled-components";
 
 export const Container = styled.div`
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
 `;
 
 export const Card = styled.div<{ corners?: number[] }>`
   border-radius: 25px;
-  box-shadow: 0 0 35px -10px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
   background: ${({theme}) => theme.bgPrimary};
   ${({corners}) => css`
     border-top-left-radius: ${corners ? corners[0] : 25}px;

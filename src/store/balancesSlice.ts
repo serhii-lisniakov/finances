@@ -56,7 +56,7 @@ const balancesSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getBalances.fulfilled, (state, action) => {
-                return action.payload;
+                return action.payload || initialState;
             })
     },
 })

@@ -14,7 +14,7 @@ const ItemBody = styled.div`
   grid-template-columns: 30px 1fr 20% 25% 30px;
   align-items: center;
   border-bottom: 1px solid ${({theme}) => theme.bgSecondary};
-  padding: 7px;
+  padding: 2px 4px;
   transition: all .3s;
 
   &:hover {

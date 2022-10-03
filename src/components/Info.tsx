@@ -59,6 +59,7 @@ const Control: React.FC<ControlProps> = (props) => {
 
 export const Info: React.FC = () => {
     const {income, invest, rest, bank, crypto, cash} = useAppSelector(state => state.balances);
+    const credits = useAppSelector(state => state.credits);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -71,9 +72,9 @@ export const Info: React.FC = () => {
         dispatch(updateBalances({name, value}));
     }, [])
 
-    const calcInvest = useMemo(() => +(income * invest/100).toFixed(), [invest]);
-    const calcCredits = useMemo(() => 0, [invest]);
-    const calcAcc = useMemo(() => +(income - calcInvest - calcCredits - rest).toFixed(), [invest]);
+    const calcInvest = useMemo(() => +(income * invest/100).toFixed(), [invest, credits]);
+    const calcCredits = useMemo(() => credits.reduce((sum, c) => sum + c.price, 0), [invest, credits]);
+    const calcAcc = useMemo(() => +(income - calcInvest - calcCredits - rest).toFixed(), [invest, credits, rest]);
 
     return (
         <StyledCard corners={[25, 25, 0, 0]}>

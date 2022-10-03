@@ -8,14 +8,13 @@ import styled from "styled-components";
 import {Total} from "./Total";
 
 const StyledContainer = styled(Container)`
-  padding: 10px;
   display: grid;
-  gap: 1em;
   height: 100vh;
   grid-template: auto 1fr / 1fr;
 `;
 
 const Body = styled.div`
+  padding: 15px;
   display: grid;
   gap: 1em;
   grid-template: minmax(300px, 1fr) / 1fr 30% 20%;
