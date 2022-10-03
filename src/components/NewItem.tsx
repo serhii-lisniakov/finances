@@ -1,5 +1,5 @@
 import React, {memo, useState} from "react";
-import {useAppDispatch} from "../hooks/useStore";
+import {useAppDispatch} from "../hook";
 import styled from "styled-components";
 import {Button} from "./Button";
 import {Input} from "./Input";

@@ -1,7 +1,7 @@
 import {Goal} from "../models/Goal";
 import React, {FormEvent, useState} from "react";
 import styled from "styled-components";
-import {useAppDispatch} from "../hooks/useStore";
+import {useAppDispatch} from "../hook";
 import {putGoal, removeGoal, statusGoal, updateGoal} from "../store/goalsSlice";
 import {GoalStatus} from "../enums/GoalStatus";
 import {Icon} from "./Icon";

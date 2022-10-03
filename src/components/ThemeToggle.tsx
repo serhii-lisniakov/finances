@@ -1,5 +1,5 @@
 import React from "react";
-import {useAppDispatch, useAppSelector} from "../hooks/useStore";
+import {useAppDispatch, useAppSelector} from "../hook";
 import {toggle} from "../store/themeSlice";
 import {Icon} from "./Icon";
 import {Icons} from "../models/Icon";

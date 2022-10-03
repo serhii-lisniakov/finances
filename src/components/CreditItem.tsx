@@ -1,6 +1,6 @@
 import React, {FormEvent, useState} from "react";
 import styled from "styled-components";
-import {useAppDispatch} from "../hooks/useStore";
+import {useAppDispatch} from "../hook";
 import {Icon} from "./Icon";
 import {Input} from "./Input";
 import {Price} from "./Price";

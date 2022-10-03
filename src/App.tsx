@@ -1,7 +1,7 @@
 import React from 'react';
 import {ThemeProvider} from "styled-components";
 import {GlobalStyles} from "./styles/global";
-import {useAppSelector} from "./hooks/useStore";
+import {useAppSelector} from "./hook";
 import {themes} from "./styles/themes";
 import {Layout} from "./components/Layout";
 

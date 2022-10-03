@@ -1,6 +1,6 @@
 import React, {HTMLAttributes} from "react";
 import styled from "styled-components";
-import {useAppSelector} from "../hooks/useStore";
+import {useAppSelector} from "../hook";
 import {themes, ThemesNames} from "../styles/themes";
 
 const StyledStatus = styled.span`

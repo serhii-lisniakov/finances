@@ -1,5 +1,5 @@
 import React from "react";
-import {useAppSelector} from "../hooks/useStore";
+import {useAppSelector} from "../hook";
 import {FlexContainer} from "./components";
 import Highlighter from "./Highlighter";
 import {Price} from "./Price";

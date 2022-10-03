@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {useAppDispatch, useAppSelector} from "../hooks/useStore";
+import {useAppDispatch, useAppSelector} from "../hook";
 import {GoalItem} from "./GoalItem";
 import styled from "styled-components";
 import NewGoal from "./NewItem";

@@ -1,6 +1,6 @@
 import React, {FormEvent, InputHTMLAttributes, useCallback, useEffect, useMemo} from "react";
 import {Card, FlexContainer, FlexContainerColumn, Label} from "./components";
-import {useAppDispatch, useAppSelector} from "../hooks/useStore";
+import {useAppDispatch, useAppSelector} from "../hook";
 import {Input} from "./Input";
 import {Price} from "./Price";
 import {BalancesState, getBalances, saveBalances, updateBalances} from "../store/balancesSlice";

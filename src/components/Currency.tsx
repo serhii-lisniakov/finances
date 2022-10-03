@@ -1,5 +1,5 @@
 import React, {memo, useEffect} from "react";
-import {useAppDispatch, useAppSelector} from "../hooks/useStore";
+import {useAppDispatch, useAppSelector} from "../hook";
 import {getCurrency} from "../store/currencySlice";
 import Highlighter from "./Highlighter";
 

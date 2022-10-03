@@ -1,5 +1,5 @@
 import React, {PropsWithChildren} from "react";
-import {useAppSelector} from "../hooks/useStore";
+import {useAppSelector} from "../hook";
 import styled from "styled-components";
 import {getFormattedPrice, getPriceInCurrency, getPriceInUAH} from "../helpers/functions";
 

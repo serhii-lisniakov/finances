@@ -1,5 +1,5 @@
 import React from "react";
-import {useAppSelector} from "../hooks/useStore";
+import {useAppSelector} from "../hook";
 import styled from "styled-components";
 import {Card} from "./components";
 import {getPriceInCurrency} from "../helpers/functions";
