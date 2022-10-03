@@ -6,6 +6,15 @@ import {Info} from "./Info";
 import {Timeline} from "./Timeline";
 import styled from "styled-components";
 import {Total} from "./Total";
+import {auth} from "../firebase";
+import {useAuthState} from "react-firebase-hooks/auth";
+
+const Loader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
 
 const StyledContainer = styled(Container)`
   display: grid;
@@ -27,17 +36,20 @@ const InfoSection = styled.div`
 `;
 
 export const Layout = () => {
+    const [user, loading] = useAuthState(auth);
+
     return (
         <StyledContainer>
             <Header/>
-            <Body>
+            {loading && <Loader>Loading...</Loader>}
+            {user && <Body>
                 <Goals/>
                 <InfoSection>
                     <Info/>
                     <Total/>
                 </InfoSection>
                 <Timeline/>
-            </Body>
+            </Body>}
         </StyledContainer>
     )
 }
