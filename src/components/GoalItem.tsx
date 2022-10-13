@@ -2,12 +2,14 @@ import {Goal} from "../models/Goal";
 import React, {FormEvent, useState} from "react";
 import styled from "styled-components";
 import {useAppDispatch} from "../hook";
-import {putGoal, removeGoal, statusGoal, updateGoal} from "../store/goalsSlice";
+import {changeGoal, removeGoal, updateGoal} from "../store/goalsSlice";
 import {GoalStatus} from "../enums/GoalStatus";
 import {Icon} from "./Icon";
 import {Icons} from "../models/Icon";
 import {Input} from "./Input";
 import {Price} from "./Price";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {auth} from "../firebase";
 
 const ItemBody = styled.div`
   display: grid;
@@ -26,7 +28,8 @@ const StyledTitle = styled.span`
   padding-right: 10px;
 `;
 
-const Status: React.FC<Goal> = ({id, status}) => {
+const Status: React.FC<Goal> = ({id, status, ...goal}) => {
+    const [user] = useAuthState(auth);
     const dispatch = useAppDispatch();
     const icons: Icons = {
         [GoalStatus.Open]: {color: '', icon: 'add'},
@@ -36,10 +39,14 @@ const Status: React.FC<Goal> = ({id, status}) => {
 
     const changeStatus = () => {
         const nextStatus = status + 1;
-        dispatch(statusGoal({
+        const newStatus = nextStatus >= (Object.keys(GoalStatus).length - 1) / 2 ? GoalStatus.Open : nextStatus;
+        dispatch(updateGoal({
+            uid: user?.uid,
             id,
-            status: nextStatus >= (Object.keys(GoalStatus).length - 1) / 2 ? GoalStatus.Open : nextStatus,
+            status: newStatus,
+            ...goal,
         }))
+        dispatch(changeGoal({id, value: newStatus, property: 'status'}))
     }
 
     return (
@@ -51,14 +58,15 @@ const Status: React.FC<Goal> = ({id, status}) => {
     )
 }
 
-const Title: React.FC<Goal> = ({id, title: goalTitle}) => {
+const Title: React.FC<Goal> = ({id, title: goalTitle, ...goal}) => {
+    const [user] = useAuthState(auth);
     const [title, setTitle] = useState(goalTitle);
     const dispatch = useAppDispatch();
 
     const changeTitle = (e: FormEvent<HTMLInputElement>) => {
         const title = e.currentTarget.value;
         setTitle(title)
-        dispatch(updateGoal({id, value: title, property: 'title'}))
+        dispatch(changeGoal({id, value: title, property: 'title'}))
     }
 
     return (
@@ -67,20 +75,26 @@ const Title: React.FC<Goal> = ({id, title: goalTitle}) => {
                 value={title}
                 onChange={changeTitle}
                 hideBorders={true}
-                onEnterPress={() => dispatch(putGoal())}
+                onEnterPress={() => dispatch(updateGoal({
+                    uid: user?.uid,
+                    id,
+                    title,
+                    ...goal,
+                }))}
             />
         </StyledTitle>
     )
 }
 
-const GoalPrice: React.FC<Goal> = ({id, price: goalPrice}) => {
+const GoalPrice: React.FC<Goal> = ({id, price: goalPrice, ...goal}) => {
+    const [user] = useAuthState(auth);
     const [price, setPrice] = useState(goalPrice);
     const dispatch = useAppDispatch();
 
     const changePrice = (e: FormEvent<HTMLInputElement>) => {
         const price = +e.currentTarget.value;
         setPrice(price)
-        dispatch(updateGoal({id, value: price, property: 'price'}))
+        dispatch(changeGoal({id, value: price, property: 'price'}))
     }
 
     return (
@@ -91,18 +105,24 @@ const GoalPrice: React.FC<Goal> = ({id, price: goalPrice}) => {
                 maskCurrency={true}
                 justifyRight={true}
                 type={'number'}
-                onEnterPress={() => dispatch(putGoal())}
+                onEnterPress={() => dispatch(updateGoal({
+                    uid: user?.uid,
+                    id,
+                    price,
+                    ...goal,
+                }))}
             />
         </Price>
     )
 }
 
 const Delete: React.FC<Goal> = ({id}) => {
+    const [user] = useAuthState(auth);
     const dispatch = useAppDispatch();
 
     return (
         <Icon
-            onClick={() => dispatch(removeGoal(id))}
+            onClick={() => dispatch(removeGoal({id, uid: user?.uid}))}
             icon={'delete_forever'}
             color={'red'}
         />

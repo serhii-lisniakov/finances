@@ -1,69 +1,78 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Goal} from "../models/Goal";
 import {GoalStatus} from "../enums/GoalStatus";
-import {LocalStorage} from "../enums/LocalStorage";
-import {RootState} from "./index";
 import {PutEntity} from "../models/PutEntity";
+import {deleteField, doc, getDoc, setDoc, updateDoc} from "firebase/firestore"
+import {UID} from "../models/UID";
+import {db} from "../firebase";
 
-type PutStatus = {
-    id: number;
-    status: GoalStatus;
+type IUID = {
+    uid: UID;
 }
+
+type PostGoal = IUID & {
+    title: string;
+};
+
+type UpdatedGoal = IUID & Goal;
+
+type DeleteGoal = IUID & {
+    id: number;
+};
 
 type State = {
     goals: Goal[];
 }
 
-export const getGoals = createAsyncThunk<Goal[]>(
+const goalsDoc = (uid: string) => doc(db, 'goals', uid);
+
+export const getGoals = createAsyncThunk<Goal[], UID>(
     'goals/get',
-    async function () {
-        const goals = JSON.parse(localStorage.getItem(LocalStorage.Goals) || 'null') || [];
-        return new Promise((resolve) => {
-            resolve(goals)
-        });
+    async function (uid) {
+        if (!uid) {
+            return [];
+        }
+        const doc = await getDoc(goalsDoc(uid));
+        const goals = doc.data() || [];
+        return Object.values(goals) || [];
     }
 )
 
-export const addGoal = createAsyncThunk<Goal, string>(
-    'goals/add',
-    async function (title) {
+export const addGoal = createAsyncThunk<Goal | null, PostGoal>(
+    'goals/post',
+    async function ({title, uid}) {
+        if (!uid) {
+            return null;
+        }
         const goal: Goal = {
             id: new Date().getTime(),
             title,
             status: GoalStatus.Open,
             price: 0,
         }
-        return new Promise((resolve) => {
-            resolve(goal)
-        });
+        await setDoc(goalsDoc(uid), {[goal.id]: goal}, {merge: true});
+        return goal;
     }
 )
 
-export const removeGoal = createAsyncThunk<number, number>(
-    'goals/remove',
-    async function (id) {
-        return new Promise((resolve) => {
-            resolve(id)
-        });
+export const removeGoal = createAsyncThunk<number | void, DeleteGoal>(
+    'goals/delete',
+    async function ({id, uid}) {
+        if (!uid) {
+            return;
+        }
+        await updateDoc(goalsDoc(uid), {[id]: deleteField()})
+        return id;
     }
 )
 
-export const statusGoal = createAsyncThunk<PutStatus, PutStatus>(
-    'goals/status',
-    async function (payload) {
-        return new Promise((resolve) => {
-            resolve(payload)
-        });
-    }
-)
-
-export const putGoal = createAsyncThunk<void, void, { state: RootState }>(
-    'goals/savePrice',
-    async function (_, {getState}) {
-        saveToLocalStorage(getState().goals)
-        return new Promise((resolve) => {
-            resolve()
-        });
+export const updateGoal = createAsyncThunk<void, UpdatedGoal>(
+    'goals/put',
+    async function ({uid, ...goal}) {
+        if (!uid) {
+            return;
+        }
+        await setDoc(goalsDoc(uid), {[goal.id]: goal}, {merge: true});
     }
 )
 
@@ -75,7 +84,7 @@ const goalsSlice = createSlice({
     name: 'goals',
     initialState,
     reducers: {
-        updateGoal: (state, {payload}: PayloadAction<PutEntity<Goal>>) => {
+        changeGoal: (state, {payload}: PayloadAction<PutEntity<Goal>>) => {
             const goal = state.goals.find(g => g.id === payload.id);
             if (goal) {
                 goal[payload.property] = payload.value as never
@@ -88,27 +97,16 @@ const goalsSlice = createSlice({
                 state.goals = action.payload;
             })
             .addCase(addGoal.fulfilled, (state, action) => {
-                state.goals.push(action.payload)
-                saveToLocalStorage(state)
+                if (action.payload) {
+                    state.goals.push(action.payload)
+                }
             })
             .addCase(removeGoal.fulfilled, (state, action) => {
                 state.goals = state.goals.filter(g => g.id !== action.payload)
-                saveToLocalStorage(state)
-            })
-            .addCase(statusGoal.fulfilled, (state, {payload}) => {
-                const goal = state.goals.find(g => g.id === payload.id);
-                if (goal) {
-                    goal.status = payload.status
-                    saveToLocalStorage(state)
-                }
             })
     }
 })
 
-export const {updateGoal} = goalsSlice.actions;
+export const {changeGoal} = goalsSlice.actions;
 
 export default goalsSlice.reducer;
-
-function saveToLocalStorage(state: State) {
-    localStorage.setItem(LocalStorage.Goals, JSON.stringify(state.goals))
-}

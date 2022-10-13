@@ -3,6 +3,8 @@ import {useAppDispatch} from "../hook";
 import styled from "styled-components";
 import {Button} from "./Button";
 import {Input} from "./Input";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {auth} from "../firebase";
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,12 +16,13 @@ type Props = {
 }
 
 const NewItem: React.FC<Props> = ({dispatcher}) => {
+    const [user] = useAuthState(auth);
     const [value, setValue] = useState<string>('');
     const dispatch = useAppDispatch();
 
     const add = () => {
         if (value?.trim()) {
-            dispatch(dispatcher(value));
+            dispatch(dispatcher({title: value, uid: user?.uid}));
             setValue('');
         }
     }
