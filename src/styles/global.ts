@@ -12,7 +12,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   html {
-    font-size: 14px;
+    font-size: 1vw;
   }
 
   #root {
@@ -47,5 +47,9 @@ export const GlobalStyles = createGlobalStyle`
 
   img {
     max-width: 100%;
+  }
+  
+  input, select {
+    font-size: inherit;
   }
 `;

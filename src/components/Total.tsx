@@ -18,7 +18,7 @@ export const Total = () => {
     const {price: currencyPrice} = useAppSelector(state => state.currency);
 
     return (
-        <Body corners={[0, 0, 25, 25]}>
+        <Body>
             ${+getPriceInCurrency(bank, currencyPrice).toFixed() + cash}
         </Body>
     )

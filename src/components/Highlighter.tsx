@@ -12,11 +12,12 @@ const StyledHighlighter = styled.span<Props>`
   padding: 3px 5px;
   border-radius: 10px;
   background: ${({theme, bg}) => theme.backgrounds[bg || 'primary']};
-  color: white;
+  color: ${({bg}) => bg === 'hot' ? 'black' : 'white'};
   letter-spacing: 1px;
+  pointer-events: none;
 
   *:not(input) {
-    color: white;
+    color: ${({bg}) => bg === 'hot' ? 'black' : 'white'};
   }
 `;
 

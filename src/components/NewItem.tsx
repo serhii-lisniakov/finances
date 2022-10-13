@@ -34,6 +34,7 @@ const NewItem: React.FC<Props> = ({dispatcher}) => {
                 value={value}
                 onChange={(e) => setValue(e.currentTarget.value)}
                 onEnterPress={add}
+                keepFocus={true}
             />
             <Button onClick={add}>Add</Button>
         </Wrapper>

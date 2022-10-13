@@ -1,10 +1,5 @@
 import styled, {css} from "styled-components";
 
-export const Container = styled.div`
-  max-width: 1300px;
-  margin: 0 auto;
-`;
-
 export const Card = styled.div<{ corners?: number[] }>`
   border-radius: 25px;
   box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
@@ -27,6 +22,7 @@ export const FlexContainer = styled.div`
 
 export const FlexContainerColumn = styled(FlexContainer)`
   flex-direction: column;
+  align-items: stretch;
 `;
 
 export const Label = styled.label`

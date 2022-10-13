@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../hook";
 import NewGoal from "./NewItem";
-import {FlexContainerColumn, List} from "./components";
+import {Card, FlexContainerColumn, List} from "./components";
 import {addCredit, getCredits} from "../store/creditsSlice";
 import Highlighter from "./Highlighter";
 import styled from "styled-components";
@@ -9,15 +9,13 @@ import {CreditItem} from "./CreditItem";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "../firebase";
 
-const Container = styled(FlexContainerColumn)`
-  align-items: stretch;
-  margin-bottom: auto;
-  padding-left: 1px;
-  overflow: auto;
-`;
+const StyledCard = styled(Card)`
+  display: grid;
+  grid-template: auto 1fr / 1fr;
 
-const StyledList = styled(List)`
-  margin: 0;
+  > div:first-child {
+    padding: 1em 1em 0;
+  }
 `;
 
 export const Credits: React.FC = () => {
@@ -30,14 +28,16 @@ export const Credits: React.FC = () => {
     }, [])
 
     return (
-        <Container>
-            <Highlighter bg={'warn'}>
-                Credits
-            </Highlighter>
-            <NewGoal dispatcher={addCredit}/>
-            <StyledList>
+        <StyledCard>
+            <FlexContainerColumn>
+                <Highlighter bg={'warn'}>
+                    Credits
+                </Highlighter>
+                <NewGoal dispatcher={addCredit}/>
+            </FlexContainerColumn>
+            <List>
                 {credits.map(c => <CreditItem key={c.id} credit={c}/>)}
-            </StyledList>
-        </Container>
+            </List>
+        </StyledCard>
     )
 }

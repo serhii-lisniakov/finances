@@ -87,15 +87,16 @@ type Props = {
     justifyRight?: boolean;
     onEnterPress?: Function;
     maskCurrency?: boolean;
+    keepFocus?: boolean;
 }
 
 export const Input: React.FC<Props & InputHTMLAttributes<HTMLInputElement>> = (props) => {
     const ref = useRef<HTMLInputElement>(null)
-    const {hideBorders, onEnterPress, maskCurrency, ...restProps} = props;
+    const {hideBorders, onEnterPress, maskCurrency, keepFocus, ...restProps} = props;
 
     const handleEnter = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.code === 'Enter') {
-            ref && ref.current?.blur();
+            !keepFocus && ref && ref.current?.blur();
             onEnterPress && onEnterPress();
         }
     };

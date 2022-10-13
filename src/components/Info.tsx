@@ -6,7 +6,6 @@ import {Price} from "./Price";
 import {BalancesState, getBalances, saveBalances, updateBalances} from "../store/balancesSlice";
 import Highlighter from "./Highlighter";
 import styled from "styled-components";
-import {Credits} from "./Credits";
 
 const StyledCard = styled(Card)`
   display: flex;
@@ -72,12 +71,12 @@ export const Info: React.FC = () => {
         dispatch(updateBalances({name, value}));
     }, [])
 
-    const calcInvest = useMemo(() => +(income * invest/100).toFixed(), [invest, credits]);
+    const calcInvest = useMemo(() => +(income * invest / 100).toFixed(), [invest, credits]);
     const calcCredits = useMemo(() => credits.reduce((sum, c) => sum + c.price, 0), [invest, credits]);
     const calcAcc = useMemo(() => +(income - calcInvest - calcCredits - rest).toFixed(), [invest, credits, rest]);
 
     return (
-        <StyledCard corners={[25, 25, 0, 0]}>
+        <StyledCard>
             <FlexContainerColumn>
                 <Highlighter bg={'green'}>
                     <Control
@@ -106,8 +105,6 @@ export const Info: React.FC = () => {
                     />
                 </Highlighter>
             </FlexContainerColumn>
-
-            <Credits/>
 
             <FlexContainerColumn>
                 <FlexContainer>
