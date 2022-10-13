@@ -5,6 +5,7 @@ import {PutEntity} from "../models/PutEntity";
 import {deleteField, doc, getDoc, setDoc, updateDoc} from "firebase/firestore"
 import {UID} from "../models/UID";
 import {db} from "../firebase";
+import {RootState} from "./index";
 
 type IUID = {
     uid: UID;
@@ -14,9 +15,7 @@ type PostGoal = IUID & {
     title: string;
 };
 
-type UpdatedGoal = IUID & Goal;
-
-type DeleteGoal = IUID & {
+type UpdateDelete = IUID & {
     id: number;
 };
 
@@ -55,7 +54,18 @@ export const addGoal = createAsyncThunk<Goal | null, PostGoal>(
     }
 )
 
-export const removeGoal = createAsyncThunk<number | void, DeleteGoal>(
+export const updateGoal = createAsyncThunk<void, UpdateDelete, { state: RootState }>(
+    'goals/put',
+    async function ({uid, id}, {getState}) {
+        if (!uid) {
+            return;
+        }
+        const goal = getState().credits.find(c => c.id === id);
+        await setDoc(goalsDoc(uid), {[id]: goal}, {merge: true});
+    }
+)
+
+export const removeGoal = createAsyncThunk<number | void, UpdateDelete>(
     'goals/delete',
     async function ({id, uid}) {
         if (!uid) {
@@ -63,16 +73,6 @@ export const removeGoal = createAsyncThunk<number | void, DeleteGoal>(
         }
         await updateDoc(goalsDoc(uid), {[id]: deleteField()})
         return id;
-    }
-)
-
-export const updateGoal = createAsyncThunk<void, UpdatedGoal>(
-    'goals/put',
-    async function ({uid, ...goal}) {
-        if (!uid) {
-            return;
-        }
-        await setDoc(goalsDoc(uid), {[goal.id]: goal}, {merge: true});
     }
 )
 

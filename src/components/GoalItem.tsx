@@ -28,7 +28,7 @@ const StyledTitle = styled.span`
   padding-right: 10px;
 `;
 
-const Status: React.FC<Goal> = ({id, status, ...goal}) => {
+const Status: React.FC<Goal> = ({id, status}) => {
     const [user] = useAuthState(auth);
     const dispatch = useAppDispatch();
     const icons: Icons = {
@@ -40,12 +40,7 @@ const Status: React.FC<Goal> = ({id, status, ...goal}) => {
     const changeStatus = () => {
         const nextStatus = status + 1;
         const newStatus = nextStatus >= (Object.keys(GoalStatus).length - 1) / 2 ? GoalStatus.Open : nextStatus;
-        dispatch(updateGoal({
-            uid: user?.uid,
-            id,
-            status: newStatus,
-            ...goal,
-        }))
+        dispatch(updateGoal({uid: user?.uid, id}))
         dispatch(changeGoal({id, value: newStatus, property: 'status'}))
     }
 
@@ -58,7 +53,7 @@ const Status: React.FC<Goal> = ({id, status, ...goal}) => {
     )
 }
 
-const Title: React.FC<Goal> = ({id, title: goalTitle, ...goal}) => {
+const Title: React.FC<Goal> = ({id, title: goalTitle}) => {
     const [user] = useAuthState(auth);
     const [title, setTitle] = useState(goalTitle);
     const dispatch = useAppDispatch();
@@ -75,18 +70,13 @@ const Title: React.FC<Goal> = ({id, title: goalTitle, ...goal}) => {
                 value={title}
                 onChange={changeTitle}
                 hideBorders={true}
-                onEnterPress={() => dispatch(updateGoal({
-                    uid: user?.uid,
-                    id,
-                    title,
-                    ...goal,
-                }))}
+                onEnterPress={() => dispatch(updateGoal({uid: user?.uid, id}))}
             />
         </StyledTitle>
     )
 }
 
-const GoalPrice: React.FC<Goal> = ({id, price: goalPrice, ...goal}) => {
+const GoalPrice: React.FC<Goal> = ({id, price: goalPrice}) => {
     const [user] = useAuthState(auth);
     const [price, setPrice] = useState(goalPrice);
     const dispatch = useAppDispatch();
@@ -105,12 +95,7 @@ const GoalPrice: React.FC<Goal> = ({id, price: goalPrice, ...goal}) => {
                 maskCurrency={true}
                 justifyRight={true}
                 type={'number'}
-                onEnterPress={() => dispatch(updateGoal({
-                    uid: user?.uid,
-                    id,
-                    price,
-                    ...goal,
-                }))}
+                onEnterPress={() => dispatch(updateGoal({uid: user?.uid, id}))}
             />
         </Price>
     )

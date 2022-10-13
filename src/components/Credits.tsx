@@ -6,6 +6,8 @@ import {addCredit, getCredits} from "../store/creditsSlice";
 import Highlighter from "./Highlighter";
 import styled from "styled-components";
 import {CreditItem} from "./CreditItem";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {auth} from "../firebase";
 
 const Container = styled(FlexContainerColumn)`
   align-items: stretch;
@@ -19,11 +21,12 @@ const StyledList = styled(List)`
 `;
 
 export const Credits: React.FC = () => {
+    const [user] = useAuthState(auth);
     const credits = useAppSelector(state => state.credits);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(getCredits());
+        dispatch(getCredits(user?.uid));
     }, [])
 
     return (

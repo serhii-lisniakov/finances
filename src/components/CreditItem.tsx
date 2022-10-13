@@ -4,7 +4,10 @@ import {useAppDispatch} from "../hook";
 import {Icon} from "./Icon";
 import {Input} from "./Input";
 import {Price} from "./Price";
-import {Credit, putCredit, removeCredit, updateCredit} from "../store/creditsSlice";
+import {changeCredit, removeCredit, updateCredit} from "../store/creditsSlice";
+import {Credit} from "../models/Credit";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {auth} from "../firebase";
 
 const ItemBody = styled.div`
   display: grid;
@@ -24,13 +27,14 @@ const StyledTitle = styled.span`
 `;
 
 const Title: React.FC<Credit> = ({id, title: creditTitle}) => {
+    const [user] = useAuthState(auth);
     const [title, setTitle] = useState(creditTitle);
     const dispatch = useAppDispatch();
 
     const changeTitle = (e: FormEvent<HTMLInputElement>) => {
         const title = e.currentTarget.value;
         setTitle(title)
-        dispatch(updateCredit({id, value: title, property: 'title'}))
+        dispatch(changeCredit({id, value: title, property: 'title'}))
     }
 
     return (
@@ -39,20 +43,21 @@ const Title: React.FC<Credit> = ({id, title: creditTitle}) => {
                 value={title}
                 onChange={changeTitle}
                 hideBorders={true}
-                onEnterPress={() => dispatch(putCredit())}
+                onEnterPress={() => dispatch(updateCredit({uid: user?.uid, id}))}
             />
         </StyledTitle>
     )
 }
 
 const CreditPrice: React.FC<Credit> = ({id, price: creditPrice}) => {
+    const [user] = useAuthState(auth);
     const [price, setPrice] = useState(creditPrice);
     const dispatch = useAppDispatch();
 
     const changePrice = (e: FormEvent<HTMLInputElement>) => {
         const price = +e.currentTarget.value;
         setPrice(price)
-        dispatch(updateCredit({id, value: price, property: 'price'}))
+        dispatch(changeCredit({id, value: price, property: 'price'}))
     }
 
     return (
@@ -63,18 +68,19 @@ const CreditPrice: React.FC<Credit> = ({id, price: creditPrice}) => {
                 maskCurrency={true}
                 justifyRight={true}
                 type={'number'}
-                onEnterPress={() => dispatch(putCredit())}
+                onEnterPress={() => dispatch(updateCredit({uid: user?.uid, id}))}
             />
         </Price>
     )
 }
 
 const Delete: React.FC<Credit> = ({id}) => {
+    const [user] = useAuthState(auth);
     const dispatch = useAppDispatch();
 
     return (
         <Icon
-            onClick={() => dispatch(removeCredit(id))}
+            onClick={() => dispatch(removeCredit({id, uid: user?.uid}))}
             icon={'delete_forever'}
             color={'red'}
         />
