@@ -6,19 +6,28 @@ import {Price} from "./Price";
 import {BalancesState, getBalances, saveBalances, updateBalances} from "../store/balancesSlice";
 import Highlighter from "./Highlighter";
 import styled from "styled-components";
+import {useAuthState} from "react-firebase-hooks/auth";
+import {auth} from "../firebase";
 
 const StyledCard = styled(Card)`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: stretch;
   padding: 1em;
-  gap: 1em;
+  gap: 10px;
 `;
 
-const StyledInfo = styled(FlexContainerColumn)`
+const StyledInfoVertical = styled(FlexContainerColumn)`
   align-items: stretch;
   text-align: center;
+  flex-grow: 1;
+`;
+
+const StyledInfo = styled(FlexContainer)`
+  width: 100%;
+  
+  & > span:first-child {
+    margin-right: auto;
+  }
 `;
 
 type ControlProps = {
@@ -29,6 +38,7 @@ type ControlProps = {
     & InputHTMLAttributes<HTMLInputElement>;
 
 const Control: React.FC<ControlProps> = (props) => {
+    const [user] = useAuthState(auth);
     const dispatch = useAppDispatch();
     const {value, name, onChange, vertical, useUAH, bg, readOnly} = props;
 
@@ -45,24 +55,27 @@ const Control: React.FC<ControlProps> = (props) => {
                 justifyRight={true}
                 readOnly={readOnly}
                 type={'number'}
-                onEnterPress={() => dispatch(saveBalances())}
+                onEnterPress={() => dispatch(saveBalances(user?.uid))}
             />
         </Price>
         <Price value={value} useUAH={!useUAH}/>
     </>)
 
     return (
-        vertical ? <StyledInfo>{body()}</StyledInfo> : <FlexContainer>{body()}</FlexContainer>
+        vertical
+            ? <StyledInfoVertical>{body()}</StyledInfoVertical>
+            : <StyledInfo>{body()}</StyledInfo>
     )
 }
 
 export const Info: React.FC = () => {
+    const [user] = useAuthState(auth);
     const {income, invest, rest, bank, crypto, cash} = useAppSelector(state => state.balances);
     const credits = useAppSelector(state => state.credits);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(getBalances())
+        dispatch(getBalances(user?.uid))
     }, [])
 
     const handleChange = useCallback((e: FormEvent<HTMLInputElement>) => {
@@ -73,7 +86,7 @@ export const Info: React.FC = () => {
 
     const calcInvest = useMemo(() => +(income * invest / 100).toFixed(), [invest, credits]);
     const calcCredits = useMemo(() => credits.reduce((sum, c) => sum + c.price, 0), [invest, credits]);
-    const calcAcc = useMemo(() => +(income - calcInvest - calcCredits - rest).toFixed(), [invest, credits, rest]);
+    const calcAcc = useMemo(() => +(income - calcInvest - calcCredits - rest).toFixed(), [invest, credits, rest, income]);
 
     return (
         <StyledCard>
@@ -94,7 +107,7 @@ export const Info: React.FC = () => {
                         onChange={handleChange}
                         hideBorders={true}
                         type={'number'}
-                        onEnterPress={() => dispatch(saveBalances())}
+                        onEnterPress={() => dispatch(saveBalances(user?.uid))}
                     />%
                     <Control
                         name={'invest'}
@@ -106,25 +119,25 @@ export const Info: React.FC = () => {
                 </Highlighter>
             </FlexContainerColumn>
 
-            <FlexContainerColumn>
-                <FlexContainer>
-                    <Control
-                        name={'credits'}
-                        value={calcCredits}
-                        onChange={handleChange}
-                        vertical={true}
-                        readOnly={true}
-                        bg={'warn'}
-                    />
-                    <Control
-                        name={'rest'}
-                        value={rest}
-                        onChange={handleChange}
-                        vertical={true}
-                        bg={'warn'}
-                    />
-                </FlexContainer>
+            <FlexContainer>
+                <Control
+                    name={'credits'}
+                    value={calcCredits}
+                    onChange={handleChange}
+                    vertical={true}
+                    readOnly={true}
+                    bg={'warn'}
+                />
+                <Control
+                    name={'rest'}
+                    value={rest}
+                    onChange={handleChange}
+                    vertical={true}
+                    bg={'warn'}
+                />
+            </FlexContainer>
 
+            <FlexContainerColumn>
                 <Highlighter bg={'green'}>
                     <Control
                         name={'accumulate'}

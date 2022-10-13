@@ -1,6 +1,13 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {LocalStorage} from "../enums/LocalStorage";
 import {RootState} from "./index";
+import {doc, getDoc, setDoc} from "firebase/firestore";
+import {db} from "../firebase";
+import {UID} from "../models/UID";
+
+type UpdateBalance = {
+    name: keyof BalancesState;
+    value: number;
+}
 
 export type BalancesState = {
     income: number;
@@ -9,11 +16,6 @@ export type BalancesState = {
     crypto: number;
     bank: number;
     cash: number;
-}
-
-type UpdateBalance = {
-    name: keyof BalancesState;
-    value: number;
 }
 
 const initialState: BalancesState = {
@@ -25,23 +27,27 @@ const initialState: BalancesState = {
     cash: 0,
 };
 
-export const getBalances = createAsyncThunk<BalancesState>(
+const balancesDoc = (uid: string) => doc(db, 'balances', uid);
+
+export const getBalances = createAsyncThunk<BalancesState, UID>(
     'balances/get',
-    async function () {
-        const balances = JSON.parse(localStorage.getItem(LocalStorage.Balances) || 'null');
-        return new Promise((resolve) => {
-            resolve(balances)
-        });
+    async function (uid) {
+        if (!uid) {
+            return initialState;
+        }
+        const doc = await getDoc(balancesDoc(uid));
+        const balances = doc.data() || initialState;
+        return balances as BalancesState || initialState;
     }
 )
 
-export const saveBalances = createAsyncThunk<void, void, { state: RootState }>(
+export const saveBalances = createAsyncThunk<void, UID, { state: RootState }>(
     'balances/save',
-    async function (_, {getState}) {
-        localStorage.setItem(LocalStorage.Balances, JSON.stringify(getState().balances))
-        return new Promise((resolve) => {
-            resolve()
-        });
+    async function (uid, {getState}) {
+        if (!uid) {
+            return;
+        }
+        await setDoc(balancesDoc(uid), getState().balances);
     }
 )
 

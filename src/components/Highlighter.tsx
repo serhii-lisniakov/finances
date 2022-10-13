@@ -14,7 +14,6 @@ const StyledHighlighter = styled.span<Props>`
   background: ${({theme, bg}) => theme.backgrounds[bg || 'primary']};
   color: ${({bg}) => bg === 'hot' ? 'black' : 'white'};
   letter-spacing: 1px;
-  pointer-events: none;
 
   *:not(input) {
     color: ${({bg}) => bg === 'hot' ? 'black' : 'white'};
