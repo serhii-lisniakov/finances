@@ -1,4 +1,8 @@
 import {createGlobalStyle} from "styled-components";
+import "devextreme/dist/css/dx.light.css";
+import "tailwindcss/base.css";
+import "tailwindcss/components.css";
+import "tailwindcss/utilities.css";
 
 export const GlobalStyles = createGlobalStyle`
   * {
@@ -11,45 +15,28 @@ export const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  html {
-    font-size: 1vw;
-  }
-
   #root {
     height: 100%;
   }
-
-  ::placeholder {
-    color: inherit;
-  }
-
+  
   body {
-    font-family: 'Ubuntu', sans-serif;
-    height: 100vh;
-    width: 100vw;
+    height: 100dvh;
+    width: 100dvw;
     overflow: hidden;
     position: relative;
     text-rendering: optimizeLegibility;
     background: ${({theme}) => theme.background};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: ${({theme}) => theme.colorPrimary};
   }
 
-  ::-webkit-scrollbar {
-    background: ${({theme}) => theme.hover};
-    width: 4px;
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 
-  ::-webkit-scrollbar-thumb {
-    background-color: ${({theme}) => theme.colorPrimary};
-  }
-
-  img {
-    max-width: 100%;
-  }
-  
-  input, select {
-    font-size: inherit;
+  input[type="number"] {
+    -moz-appearance: textfield;
   }
 `;

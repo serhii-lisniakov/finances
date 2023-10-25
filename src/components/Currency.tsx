@@ -1,23 +1,23 @@
 import React, {memo, useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../hook";
 import {getCurrency} from "../store/currencySlice";
-import Highlighter from "./Highlighter";
+import {Button} from "devextreme-react/button";
 
-type Props = {}
+type Props = {};
 
 const Currency: React.FC<Props> = () => {
-    const {currency, price} = useAppSelector(state => state.currency)
+    const {currency, price} = useAppSelector((state) => state.currency);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(getCurrency());
-    }, [dispatch])
+    }, [dispatch]);
 
     return (
-        <Highlighter bg={'accent'}>
+        <Button>
             1 {currency} = {+price.toFixed(2)} UAH
-        </Highlighter>
-    )
-}
+        </Button>
+    );
+};
 
 export default memo(Currency);

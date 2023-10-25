@@ -1,4 +1,4 @@
-import {configureStore} from '@reduxjs/toolkit'
+import {configureStore} from "@reduxjs/toolkit";
 import themeReducer from "./themeSlice";
 import goalsReducer from "./goalsSlice";
 import currencyReducer from "./currencySlice";
@@ -13,7 +13,7 @@ export const store = configureStore({
         balances: balancesReducer,
         credits: creditsReducer,
     },
-})
+});
 
-export type RootState = ReturnType<typeof store.getState>
-export type AppDispatch = typeof store.dispatch
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

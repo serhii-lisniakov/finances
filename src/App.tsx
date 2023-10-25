@@ -1,17 +1,21 @@
-import React from 'react';
+import React from "react";
+import {useAppSelector} from "./hook";
+
 import {ThemeProvider} from "styled-components";
 import {GlobalStyles} from "./styles/global";
-import {useAppSelector} from "./hook";
+import {DevexpressStyles} from "./styles/devexpress";
 import {themes} from "./styles/themes";
+
 import {Layout} from "./components/Layout";
 
 function App() {
-    const {theme} = useAppSelector(state => state.theme);
+    const {theme} = useAppSelector((state) => state.theme);
 
     return (
         <ThemeProvider theme={themes[theme]}>
-            <GlobalStyles/>
-            <Layout/>
+            <GlobalStyles />
+            <DevexpressStyles />
+            <Layout />
         </ThemeProvider>
     );
 }

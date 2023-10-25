@@ -8,11 +8,11 @@ export const firebaseConfig = {
     projectId: "finances-6d2e5",
     storageBucket: "finances-6d2e5.appspot.com",
     messagingSenderId: "739636511063",
-    appId: "1:739636511063:web:4defdeb64cee3d159bbe12"
+    appId: "1:739636511063:web:4defdeb64cee3d159bbe12",
 };
 
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
-googleProvider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+googleProvider.addScope("https://www.googleapis.com/auth/contacts.readonly");

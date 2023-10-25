@@ -1,68 +1,50 @@
 import React from "react";
-import {Header} from "./Header";
-import {FlexContainerColumn} from "./components";
-import {Goals} from "./Goals";
-import {Info} from "./Info";
-import {Timeline} from "./Timeline";
-import styled from "styled-components";
-import {Total} from "./Total";
-import {auth} from "../firebase";
 import {useAuthState} from "react-firebase-hooks/auth";
-import {Credits} from "./Credits";
-
-const Loader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-`;
-
-const StyledContainer = styled.div`
-  display: grid;
-  height: 100vh;
-  grid-template: auto 1fr / 1fr;
-`;
-
-const Body = styled.div`
-  padding: 15px;
-  display: grid;
-  gap: 1em;
-  grid-template: minmax(300px, 1fr) / 1fr 1fr;
-  overflow: auto;
-`;
-
-const InfoSection = styled.div`
-  display: grid;
-  grid-template: auto 1fr / 1fr;
-  gap: 1em;
-`;
-
-const InfoSectionInner = styled(InfoSection)`
-  grid-template: 1fr / 1fr 30%;
-`;
+import {auth} from "../firebase";
+import {Loader} from "./Loader";
+import {Header} from "./Header";
+import {Goals} from "../features/Goals/Goals";
+import {Timeline} from "../features/Timeline/Timeline";
+import {Total} from "../features/Total/Total";
+import {Credits} from "../features/Credits/Credits";
+import {Balances} from "../features/Info/Balances";
+import {Card} from "./Card";
+import {Item, TabPanel} from "devextreme-react/tab-panel";
 
 export const Layout = () => {
     const [user, loading] = useAuthState(auth);
 
     return (
-        <StyledContainer>
-            <Header/>
+        <section className="grid h-full grid-cols-1 grid-rows-[auto_auto_1fr] gap-2 p-2">
+            <Header />
             {loading && <Loader>Loading...</Loader>}
-            {user &&
-                <Body>
-                    <Goals/>
-                    <InfoSection>
-                        <InfoSectionInner>
-                            <FlexContainerColumn>
-                                <Info/>
-                                <Total/>
-                            </FlexContainerColumn>
-                            <Timeline/>
-                        </InfoSectionInner>
-                        <Credits/>
-                    </InfoSection>
-                </Body>
-            }
-        </StyledContainer>
-    )
-}
+            {user && <Total />}
+
+            {user && (
+                <Card className="z-10 grid grid-cols-1 grid-rows-1">
+                    <TabPanel
+                        showNavButtons={true}
+                        defaultSelectedIndex={1}
+                    >
+                        <Item
+                            title="Balances"
+                            component={Balances}
+                        />
+                        <Item
+                            title="Timeline"
+                            component={Timeline}
+                        />
+                        <Item
+                            title="Goals"
+                            component={Goals}
+                        />
+                        <Item
+                            title="Payments"
+                            component={Credits}
+                        />
+                    </TabPanel>
+                </Card>
+            )}
+        </section>
+    );
+};

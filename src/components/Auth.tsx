@@ -1,4 +1,4 @@
-import {Button} from "./Button";
+import {Button} from "devextreme-react/button";
 import {signInWithPopup, signOut} from "firebase/auth";
 import {auth, googleProvider} from "../firebase";
 import {useAuthState} from "react-firebase-hooks/auth";
@@ -10,20 +10,16 @@ export const Auth = () => {
         try {
             await signInWithPopup(auth, googleProvider);
         } catch (err: any) {
-            alert(err.message)
+            alert(err.message);
         }
-    }
+    };
 
     return user ? (
-        <div>
-            <span style={{marginRight: '3px'}}>Hello, {user.displayName}</span>
-            <Button onClick={() => signOut(auth)}>
-                Sign Out
-            </Button>
+        <div className="flex items-center">
+            <span className="mr-1">Hello, {user.displayName}</span>
+            <Button onClick={() => signOut(auth)}>Sign Out</Button>
         </div>
     ) : (
-        <Button onClick={signIn}>
-            Sign In
-        </Button>
-    )
-}
+        <Button onClick={signIn}>Sign In</Button>
+    );
+};
