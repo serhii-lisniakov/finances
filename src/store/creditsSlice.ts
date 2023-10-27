@@ -10,9 +10,7 @@ type IUID = {
     uid: UID;
 };
 
-type PostCredit = IUID & {
-    title: string;
-};
+type PostCredit = IUID & Partial<Omit<Credit, "id">>;
 
 type UpdateDeleteCredit = IUID & {
     id: number;
@@ -35,14 +33,14 @@ export const getCredits = createAsyncThunk<Credit[], UID>("credits/get", async f
 
 export const addCredit = createAsyncThunk<Credit | null, PostCredit>(
     "credit/post",
-    async function ({title, uid}) {
+    async function ({uid, ...rest}) {
         if (!uid) {
             return null;
         }
         const credit: Credit = {
             id: new Date().getTime(),
-            title,
-            price: 0,
+            title: rest.title || "",
+            price: rest.price || 0,
         };
         await setDoc(creditsDoc(uid), {[credit.id]: credit}, {merge: true});
         return credit;

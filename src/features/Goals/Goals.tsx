@@ -1,40 +1,23 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../hook";
 import {addGoal, changeGoal, getGoals, removeGoal, updateGoal} from "../../store/goalsSlice";
-import {
-    CellPreparedEvent,
-    ColumnCellTemplateData,
-    CustomSummaryInfo,
-} from "devextreme/ui/data_grid";
+import {ColumnCellTemplateData, CustomSummaryInfo} from "devextreme/ui/data_grid";
 import {Goal} from "../../models/Goal";
 import CustomStore from "devextreme/data/custom_store";
-import {GoalStatus} from "../../enums/GoalStatus";
 import {Icon} from "../../components/Icon";
 import {useWithUID} from "../../hooks/useWithUID";
 import {
+    Button as GridButton,
     Column,
     DataGrid,
     Editing,
-    Summary,
-    TotalItem,
-    Toolbar,
     Item,
+    Summary,
+    Toolbar,
+    TotalItem,
+    Paging,
 } from "devextreme-react/data-grid";
 import {Button} from "devextreme-react/button";
-
-const StatusConfig = {
-    [GoalStatus.Open]: {icon: "add", className: "cell"},
-    [GoalStatus.Hot]: {icon: "favorites", className: "!bg-cell-yellow"},
-    [GoalStatus.Completed]: {icon: "check", className: "!bg-cell-green"},
-};
-
-const onCellPrepared = (e: CellPreparedEvent<Goal, number>) => {
-    if (e.rowType !== "data" || !e.data.id) {
-        return;
-    }
-
-    e.cellElement.classList.add(StatusConfig[e.data.status].className);
-};
 
 const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
     const totalName = options.name;
@@ -52,12 +35,17 @@ const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
 
     switch (true) {
         case totalName === "total" && calc:
-            options.totalValue += goal.status !== 2 ? goal.price : 0;
+            options.totalValue += goal.isCompleted ? 0 : goal.price;
             break;
         case totalName === "hotTotal" && calc:
-            options.totalValue += goal.status === 1 ? goal.price : 0;
+            options.totalValue += goal.isFavourite ? goal.price : 0;
             break;
     }
+};
+
+const changeStatus = (e: ColumnCellTemplateData<Goal, Goal>) => {
+    e.component.cellValue(e.row.rowIndex, e.column.dataField!, !e.value);
+    e.component.saveEditData();
 };
 
 export const Goals: React.FC = () => {
@@ -66,7 +54,7 @@ export const Goals: React.FC = () => {
     const {price} = useAppSelector((state) => state.currency);
     const dispatch = useAppDispatch();
     const dataGrid = useRef<DataGrid>(null);
-    const [showCompleted, setShowCompleted] = useState<boolean>(true);
+    const [showCompleted, setShowCompleted] = useState<boolean>(false);
 
     const customDataSource = useMemo(
         () =>
@@ -77,7 +65,7 @@ export const Goals: React.FC = () => {
                     return goals;
                 },
                 insert: async (g) => {
-                    await dispatch(addGoal({title: g.title, ...uid}));
+                    await dispatch(addGoal({...g, ...uid}));
                     return g;
                 },
                 update: async (id, values) => {
@@ -96,31 +84,26 @@ export const Goals: React.FC = () => {
         dispatch(getGoals(uid.uid));
     }, []);
 
-    const changeStatus = useCallback((e: ColumnCellTemplateData<Goal, Goal>) => {
-        e.component.cellValue(
-            e.row.rowIndex,
-            "status",
-            e.data!.status === GoalStatus.Completed ? GoalStatus.Open : e.data!.status + 1,
-        );
-        e.component.saveEditData();
-    }, []);
-
     return (
         <DataGrid
-            onCellPrepared={onCellPrepared}
             ref={dataGrid}
             dataSource={customDataSource}
             rowAlternationEnabled={true}
             showBorders={false}
+            showRowLines={true}
+            showColumnLines={false}
             height="100%"
             repaintChangesOnly
+            columnAutoWidth={true}
+            wordWrapEnabled={true}
+            noDataText="You have no goals. Add it right know."
         >
             <Toolbar>
                 <Item location="after">
                     <Button
                         text={`${showCompleted ? "Hide" : "Show"} Completed`}
                         onClick={() => setShowCompleted(!showCompleted)}
-                        visible={goals.some((g) => g.status === 2)}
+                        visible={goals.some((g) => g.isCompleted)}
                     />
                 </Item>
                 <Item name="addRowButton" />
@@ -130,26 +113,39 @@ export const Goals: React.FC = () => {
                 allowUpdating={true}
                 allowAdding={true}
                 allowDeleting={true}
-                confirmDelete={false}
+                confirmDelete={true}
                 useIcons={true}
+            />
+            <Paging defaultPageSize={100} />
+
+            <Column
+                allowSorting={false}
+                alignment="center"
+                calculateSortValue={(e: Goal) => (e.isCompleted ? 999 : 0)}
+                caption=""
+                dataField="isCompleted"
+                filterValue={showCompleted ? null : false}
+                width={30}
+                sortOrder="asc"
             />
             <Column
                 allowEditing={false}
                 allowSorting={false}
                 alignment="center"
-                calculateSortValue={(e) => (e.status === 1 ? 0 : 1)}
+                calculateSortValue={(e: Goal) => (e.isFavourite ? 0 : 1)}
                 caption=""
-                dataField="status"
-                filterValue={showCompleted ? null : 2}
-                selectedFilterOperation="<>"
-                width={40}
-                cellRender={(e: ColumnCellTemplateData<Goal, Goal>) => (
-                    <Icon
-                        onClick={() => changeStatus(e)}
-                        icon={StatusConfig[e.data!.status]?.icon}
-                        className="absolute left-2.5 text-[20px]"
-                    />
-                )}
+                cssClass="!px-0 !align-middle"
+                dataField="isFavourite"
+                width={20}
+                cellRender={(e: ColumnCellTemplateData<Goal, Goal>) =>
+                    e.data!.isCompleted ? null : (
+                        <Icon
+                            onClick={() => changeStatus(e)}
+                            icon="favorites"
+                            className={e.data!.isFavourite ? "text-amber-500" : "text-violet-300"}
+                        />
+                    )
+                }
                 sortOrder="asc"
             />
             <Column
@@ -162,10 +158,13 @@ export const Goals: React.FC = () => {
                 dataField="price"
                 caption="USD"
                 dataType="number"
-                editorOptions={{format: "currency", useMaskBehaviour: true}}
+                editorOptions={{
+                    format: "currency",
+                    useMaskBehaviour: true,
+                }}
                 format="currency"
                 alignment="right"
-                width={80}
+                width={90}
             />
             <Column
                 allowEditing={false}
@@ -174,13 +173,18 @@ export const Goals: React.FC = () => {
                 caption="UAH"
                 format="#,##0"
                 alignment="right"
-                width={80}
+                width={90}
             />
             <Column
                 caption=""
                 type="buttons"
                 width={40}
-            ></Column>
+            >
+                <GridButton
+                    name="delete"
+                    cssClass="!text-red-500"
+                />
+            </Column>
 
             {/*// @ts-ignore*/}
             <Summary calculateCustomSummary={calculateTotals}>
@@ -188,14 +192,14 @@ export const Goals: React.FC = () => {
                     name="hotTotal"
                     summaryType="custom"
                     valueFormat="currency"
-                    displayFormat="★ {0}"
+                    displayFormat="★{0}"
                     showInColumn="price"
                 />
                 <TotalItem
                     name="total"
                     summaryType="custom"
                     valueFormat="currency"
-                    displayFormat="Σ {0}"
+                    displayFormat="Σ{0}"
                     showInColumn="price"
                 />
             </Summary>

@@ -1,14 +1,10 @@
 import React, {HTMLAttributes} from "react";
-import {useAppSelector} from "../hook";
 
 type Props = {
     icon?: string;
 };
 
-export const Icon: React.FC<Props & HTMLAttributes<HTMLAnchorElement>> = (
-    props,
-) => {
-    const {theme} = useAppSelector((state) => state.theme);
+export const Icon: React.FC<Props & HTMLAttributes<HTMLAnchorElement>> = (props) => {
     const {icon, className = ""} = props;
 
     return (

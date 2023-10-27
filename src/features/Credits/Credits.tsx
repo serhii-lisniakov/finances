@@ -7,7 +7,14 @@ import {
     removeCredit,
     updateCredit,
 } from "../../store/creditsSlice";
-import {Column, DataGrid, Editing, Summary, TotalItem} from "devextreme-react/data-grid";
+import {
+    Button as GridButton,
+    Column,
+    DataGrid,
+    Editing,
+    Summary,
+    TotalItem,
+} from "devextreme-react/data-grid";
 import {Credit} from "../../models/Credit";
 import CustomStore from "devextreme/data/custom_store";
 import {useWithUID} from "../../hooks/useWithUID";
@@ -28,7 +35,7 @@ export const Credits: React.FC = () => {
                     return credits;
                 },
                 insert: async (c) => {
-                    await dispatch(addCredit({title: c.title, ...uid}));
+                    await dispatch(addCredit({...c, ...uid}));
                     return c;
                 },
                 update: async (id, values) => {
@@ -53,6 +60,8 @@ export const Credits: React.FC = () => {
             dataSource={customDataSource}
             rowAlternationEnabled={true}
             showBorders={false}
+            showRowLines={true}
+            showColumnLines={false}
             height="100%"
             repaintChangesOnly
         >
@@ -61,7 +70,7 @@ export const Credits: React.FC = () => {
                 allowUpdating={true}
                 allowAdding={true}
                 allowDeleting={true}
-                confirmDelete={false}
+                confirmDelete={true}
                 useIcons={true}
             />
             <Column
@@ -74,10 +83,13 @@ export const Credits: React.FC = () => {
                 dataField="price"
                 caption="USD"
                 dataType="number"
-                editorOptions={{format: "currency", useMaskBehaviour: true}}
+                editorOptions={{
+                    format: "currency",
+                    useMaskBehaviour: true,
+                }}
                 format="currency"
                 alignment="right"
-                width={80}
+                width={90}
             />
             <Column
                 name="amountUAH"
@@ -86,13 +98,18 @@ export const Credits: React.FC = () => {
                 caption="UAH"
                 format="#,##0"
                 alignment="right"
-                width={80}
+                width={90}
             />
             <Column
                 caption=""
                 type="buttons"
                 width={40}
-            ></Column>
+            >
+                <GridButton
+                    name="delete"
+                    cssClass="!text-red-500"
+                />
+            </Column>
 
             <Summary>
                 <TotalItem

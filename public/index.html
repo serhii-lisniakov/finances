@@ -19,8 +19,21 @@
             href="%PUBLIC_URL%/manifest.json"
         />
         <title>Finances</title>
+
+        <link
+            rel="dx-theme"
+            data-theme="generic.light"
+            href="%PUBLIC_URL%/dx.light.css"
+            data-active="false"
+        />
+        <link
+            rel="dx-theme"
+            data-theme="generic.dark"
+            href="%PUBLIC_URL%/dx.dark.css"
+            data-active="false"
+        />
     </head>
-    <body class="dx-viewport">
+    <body class="dx-viewport dx-theme-background-color">
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root"></div>
     </body>

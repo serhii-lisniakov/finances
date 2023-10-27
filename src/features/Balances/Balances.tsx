@@ -34,10 +34,9 @@ export const Balances: React.FC = () => {
     const calcCredits = useMemo(() => credits.reduce((sum, c) => sum + c.price, 0), [credits]);
     const calcTaxes = useMemo(() => income * taxes + taxes2, [income, taxes, taxes2]);
     const calcInvest = useMemo(() => invest * income, [invest, income]);
-    const calcRestUAH = useMemo(() => rest * currencyPrice, [rest]);
     const calcAcc = useMemo(() => {
         return +(income - calcTaxes - calcInvest - calcCredits - rest).toFixed();
-    }, [income, calcCredits, calcTaxes, rest]);
+    }, [income, calcTaxes, calcInvest, calcCredits, rest]);
 
     const update = (name: string | undefined, value: number) => {
         dispatch(updateBalances({name: name as keyof BalancesState, value}));
@@ -45,7 +44,7 @@ export const Balances: React.FC = () => {
     };
 
     return (
-        <div className="relative h-full p-2">
+        <div className="dx-theme-background-color relative h-full p-2">
             <Form
                 formData={state}
                 onFieldDataChanged={(c) => update(c.dataField, c.value)}
@@ -93,24 +92,6 @@ export const Balances: React.FC = () => {
                             />
                         </div>
                     </SimpleItem>
-                    <SimpleItem
-                        dataField="rest"
-                        label={{text: "Life"}}
-                    >
-                        <div className="flex gap-1">
-                            <NumberBox
-                                format="currency"
-                                value={balances.rest}
-                                onValueChange={(value) => update("rest", value)}
-                            />
-                            <NumberBox
-                                format="#,##0UAH"
-                                className="flex-grow"
-                                value={calcRestUAH}
-                                readOnly
-                            />
-                        </div>
-                    </SimpleItem>
                 </GroupItem>
                 <GroupItem caption="Savings">
                     <SimpleItem
@@ -127,16 +108,38 @@ export const Balances: React.FC = () => {
                     />
                 </GroupItem>
                 <GroupItem caption="Summary">
-                    <SimpleItem
-                        {...currency}
-                        editorOptions={{format: "$#,##0", value: calcCredits, readOnly: true}}
-                        label={{text: "Payments"}}
-                    />
-                    <SimpleItem
-                        {...currency}
-                        editorOptions={{format: "$#,##0", value: calcAcc, readOnly: true}}
-                        label={{text: "Acc/month"}}
-                    />
+                    <SimpleItem label={{text: "Expenses"}}>
+                        <div className="flex gap-1">
+                            <NumberBox
+                                format="currency"
+                                value={calcCredits}
+                                readOnly
+                                className="flex-grow"
+                            />
+                            <NumberBox
+                                format="UAH #,##0"
+                                value={calcCredits * currencyPrice}
+                                readOnly
+                                className="flex-grow"
+                            />
+                        </div>
+                    </SimpleItem>
+                    <SimpleItem label={{text: "Acc/month"}}>
+                        <div className="flex gap-1">
+                            <NumberBox
+                                format="currency"
+                                value={calcAcc}
+                                readOnly
+                                className="flex-grow"
+                            />
+                            <NumberBox
+                                format="UAH #,##0"
+                                value={calcAcc * currencyPrice}
+                                readOnly
+                                className="flex-grow"
+                            />
+                        </div>
+                    </SimpleItem>
                 </GroupItem>
             </Form>
         </div>

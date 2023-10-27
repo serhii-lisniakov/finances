@@ -6,18 +6,14 @@ import {Button} from "devextreme-react/button";
 type Props = {};
 
 const Currency: React.FC<Props> = () => {
-    const {currency, price} = useAppSelector((state) => state.currency);
+    const {price} = useAppSelector((state) => state.currency);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(getCurrency());
     }, [dispatch]);
 
-    return (
-        <Button>
-            1 {currency} = {+price.toFixed(2)} UAH
-        </Button>
-    );
+    return <Button>{+price.toFixed(2)} UAH</Button>;
 };
 
 export default memo(Currency);

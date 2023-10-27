@@ -16,7 +16,7 @@ export const Auth = () => {
 
     return user ? (
         <div className="flex items-center">
-            <span className="mr-1">Hello, {user.displayName}</span>
+            <span className="mr-1">{user.displayName}</span>
             <Button onClick={() => signOut(auth)}>Sign Out</Button>
         </div>
     ) : (

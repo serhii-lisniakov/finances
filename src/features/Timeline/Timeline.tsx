@@ -1,5 +1,5 @@
 import React, {useRef, useState} from "react";
-import DataGrid, {Column, Editing} from "devextreme-react/data-grid";
+import {DataGrid, Column, Editing, Button as GridButton} from "devextreme-react/data-grid";
 
 export const Timeline = () => {
     const [state, setState] = useState([]);
@@ -11,6 +11,8 @@ export const Timeline = () => {
             dataSource={state}
             rowAlternationEnabled={true}
             showBorders={false}
+            showRowLines={true}
+            showColumnLines={false}
             height="100%"
             columnAutoWidth={true}
             repaintChangesOnly
@@ -20,7 +22,7 @@ export const Timeline = () => {
                 allowUpdating={true}
                 allowAdding={true}
                 allowDeleting={true}
-                confirmDelete={false}
+                confirmDelete={true}
                 useIcons={true}
             />
             <Column
@@ -50,7 +52,12 @@ export const Timeline = () => {
                 caption=""
                 type="buttons"
                 width={40}
-            ></Column>
+            >
+                <GridButton
+                    name="delete"
+                    cssClass="!text-red-500"
+                />
+            </Column>
         </DataGrid>
     );
 };

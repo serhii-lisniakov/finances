@@ -1,28 +1,42 @@
-import React, {useMemo} from "react";
+import React from "react";
 import {useAppDispatch, useAppSelector} from "../hook";
 import {toggle} from "../store/themeSlice";
 import {Icon} from "./Icon";
-import {Icons} from "../models/Icon";
+import themes from "devextreme/ui/themes";
+import {Themes} from "../enums/Themes";
+
+const icons: {
+    [key in Themes]: {
+        name: Themes;
+        className: string;
+        icon: string;
+    };
+} = {
+    [Themes.Dark]: {
+        name: Themes.Dark,
+        className: "text-amber-500",
+        icon: "sun",
+    },
+    [Themes.Light]: {
+        name: Themes.Light,
+        className: "text-black",
+        icon: "moon",
+    },
+};
 
 export const ThemeToggle = () => {
     const {theme} = useAppSelector((state) => state.theme);
     const dispatch = useAppDispatch();
 
-    const icons: Icons = useMemo(
-        () => ({
-            dark: {color: "orange", icon: "sun"},
-            light: {color: "grey", icon: "moon"},
-        }),
-        [],
-    );
-
     return (
         <Icon
-            onClick={() =>
-                dispatch(toggle(theme === "light" ? "dark" : "light"))
-            }
+            onClick={() => {
+                const newTheme = theme === Themes.Light ? Themes.Dark : Themes.Light;
+                dispatch(toggle(newTheme));
+                themes.current(`generic.${newTheme}`);
+            }}
             icon={icons[theme].icon}
-            color={icons[theme].color}
+            className={icons[theme].className}
         />
     );
 };

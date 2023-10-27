@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Goal} from "../models/Goal";
-import {GoalStatus} from "../enums/GoalStatus";
 import {PutEntity} from "../models/PutEntity";
 import {deleteField, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
 import {UID} from "../models/UID";
@@ -11,9 +10,7 @@ type IUID = {
     uid: UID;
 };
 
-type PostGoal = IUID & {
-    title: string;
-};
+type PostGoal = IUID & Partial<Omit<Goal, "id">>;
 
 type UpdateDelete = IUID & {
     id: number;
@@ -36,15 +33,16 @@ export const getGoals = createAsyncThunk<Goal[], UID>("goals/get", async functio
 
 export const addGoal = createAsyncThunk<Goal | null, PostGoal>(
     "goals/post",
-    async function ({title, uid}) {
+    async function ({uid, ...rest}) {
         if (!uid) {
             return null;
         }
         const goal: Goal = {
             id: new Date().getTime(),
-            title,
-            status: GoalStatus.Open,
-            price: 0,
+            title: rest.title || "",
+            isFavourite: rest.isFavourite || false,
+            isCompleted: rest.isCompleted || false,
+            price: rest.price || 0,
         };
         await setDoc(goalsDoc(uid), {[goal.id]: goal}, {merge: true});
         return goal;

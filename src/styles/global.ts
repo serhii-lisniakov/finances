@@ -1,5 +1,4 @@
 import {createGlobalStyle} from "styled-components";
-import "devextreme/dist/css/dx.light.css";
 import "tailwindcss/base.css";
 import "tailwindcss/components.css";
 import "tailwindcss/utilities.css";
@@ -25,7 +24,6 @@ export const GlobalStyles = createGlobalStyle`
     overflow: hidden;
     position: relative;
     text-rendering: optimizeLegibility;
-    background: ${({theme}) => theme.background};
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
