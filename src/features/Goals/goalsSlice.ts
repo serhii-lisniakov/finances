@@ -1,10 +1,10 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {Goal} from "../models/Goal";
-import {PutEntity} from "../models/PutEntity";
+import {Goal} from "./Goal";
+import {PutEntity} from "../../models/PutEntity";
 import {deleteField, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
-import {UID} from "../models/UID";
-import {db} from "../firebase";
-import {RootState} from "./index";
+import {UID} from "../../models/UID";
+import {db} from "../../firebase";
+import {RootState} from "../../store";
 
 type IUID = {
     uid: UID;

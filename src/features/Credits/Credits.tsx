@@ -1,23 +1,20 @@
 import React, {useEffect, useMemo, useRef} from "react";
 import {useAppDispatch, useAppSelector} from "../../hook";
-import {
-    addCredit,
-    changeCredit,
-    getCredits,
-    removeCredit,
-    updateCredit,
-} from "../../store/creditsSlice";
+import {addCredit, changeCredit, getCredits, removeCredit, updateCredit} from "./creditsSlice";
 import {
     Button as GridButton,
     Column,
     DataGrid,
     Editing,
+    Item,
     Summary,
+    Toolbar,
     TotalItem,
 } from "devextreme-react/data-grid";
-import {Credit} from "../../models/Credit";
+import {Credit} from "./Credit";
 import CustomStore from "devextreme/data/custom_store";
 import {useWithUID} from "../../hooks/useWithUID";
+import {DataGridMobileTitle} from "../../components/DataGridMobileTitle";
 
 export const Credits: React.FC = () => {
     const uid = useWithUID();
@@ -64,7 +61,14 @@ export const Credits: React.FC = () => {
             showColumnLines={false}
             height="100%"
             repaintChangesOnly
+            noDataText="You have no payments. A lucky one!"
         >
+            <Toolbar>
+                <Item location="before">
+                    <DataGridMobileTitle>Expenses</DataGridMobileTitle>
+                </Item>
+                <Item name="addRowButton" />
+            </Toolbar>
             <Editing
                 mode="cell"
                 allowUpdating={true}

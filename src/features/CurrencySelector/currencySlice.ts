@@ -1,16 +1,13 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {Currency} from "../models/Currency";
+import {Currency} from "./Currency";
 
-export const getCurrency = createAsyncThunk<[Currency], void>(
-    "currency/get",
-    async function () {
-        const date = new Date().toISOString().split("-").join("").slice(0, 8);
-        const currency = "USD";
-        const url = `https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=${currency}&date=${date}&json`;
-        const response = await fetch(url);
-        return await response.json();
-    },
-);
+export const getCurrency = createAsyncThunk<[Currency], void>("currency/get", async function () {
+    const date = new Date().toISOString().split("-").join("").slice(0, 8);
+    const currency = "USD";
+    const url = `https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?valcode=${currency}&date=${date}&json`;
+    const response = await fetch(url);
+    return await response.json();
+});
 
 type State = {
     currency: string;

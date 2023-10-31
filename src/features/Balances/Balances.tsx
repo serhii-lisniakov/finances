@@ -2,10 +2,10 @@ import React, {useEffect, useMemo, useState} from "react";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "../../firebase";
 import {useAppDispatch, useAppSelector} from "../../hook";
-import {BalancesState, getBalances, saveBalances, updateBalances} from "../../store/balancesSlice";
+import {BalancesState, getBalances, saveBalances, updateBalances} from "./balancesSlice";
 import {Form, GroupItem, SimpleItem, ISimpleItemProps} from "devextreme-react/form";
 import {NumberBox} from "devextreme-react";
-import {getCredits} from "../../store/creditsSlice";
+import {getCredits} from "../Credits/creditsSlice";
 
 const currency: Partial<ISimpleItemProps> = {
     editorType: "dxNumberBox",

@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {LocalStorage} from "../enums/LocalStorage";
-import {Themes} from "../enums/Themes";
+import {LocalStorage} from "../../enums/LocalStorage";
+import {Themes} from "../../enums/Themes";
 
 const initialState: {theme: Themes} = {
     theme: (localStorage.getItem(LocalStorage.Theme) as Themes) || "light",

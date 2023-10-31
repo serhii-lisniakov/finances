@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../../hook";
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "../../firebase";
-import {getBalances} from "../../store/balancesSlice";
+import {getBalances} from "../Balances/balancesSlice";
 
 export const Total = () => {
     const [user] = useAuthState(auth);

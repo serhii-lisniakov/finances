@@ -1,14 +1,20 @@
 import {useEffect, useState} from "react";
 
-type MediaQuery = "sm" | "md" | "lg";
+type PredefinedMediaQuery = "sm" | "md" | "lg";
 
-const screens: {[key in MediaQuery]: string} = {
+const screens: {[key in PredefinedMediaQuery]: string} = {
     sm: "768px",
     md: "1024px",
     lg: "1440px",
 };
 
-export function useMediaQuery(query: keyof typeof screens): boolean {
+export function useMediaQuery(query: PredefinedMediaQuery | string): boolean {
+    let queryExpr: string;
+
+    const isPredefined = Object.keys(screens).includes(query);
+
+    queryExpr = isPredefined ? `(max-width: ${screens[query as PredefinedMediaQuery]})` : query;
+
     const getMatches = (query: string): boolean => {
         // Prevents SSR issues
         if (typeof window !== "undefined") {
@@ -17,14 +23,14 @@ export function useMediaQuery(query: keyof typeof screens): boolean {
         return false;
     };
 
-    const [matches, setMatches] = useState<boolean>(getMatches(query));
+    const [matches, setMatches] = useState<boolean>(getMatches(queryExpr));
 
     function handleChange() {
-        setMatches(getMatches(query));
+        setMatches(getMatches(queryExpr));
     }
 
     useEffect(() => {
-        const matchMedia = window.matchMedia(query);
+        const matchMedia = window.matchMedia(queryExpr);
 
         // Triggered at the first client-side load and if query changes
         handleChange();
@@ -44,7 +50,7 @@ export function useMediaQuery(query: keyof typeof screens): boolean {
             }
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [query]);
+    }, [queryExpr]);
 
     return matches;
 }

@@ -1,5 +1,13 @@
 import React, {useRef, useState} from "react";
-import {DataGrid, Column, Editing, Button as GridButton} from "devextreme-react/data-grid";
+import {
+    DataGrid,
+    Column,
+    Editing,
+    Button as GridButton,
+    Item,
+    Toolbar,
+} from "devextreme-react/data-grid";
+import {DataGridMobileTitle} from "../../components/DataGridMobileTitle";
 
 export const Timeline = () => {
     const [state, setState] = useState([]);
@@ -16,7 +24,14 @@ export const Timeline = () => {
             height="100%"
             columnAutoWidth={true}
             repaintChangesOnly
+            noDataText="Start adding expenses rignt now..."
         >
+            <Toolbar>
+                <Item location="before">
+                    <DataGridMobileTitle>Timeline</DataGridMobileTitle>
+                </Item>
+                <Item name="addRowButton" />
+            </Toolbar>
             <Editing
                 mode="cell"
                 allowUpdating={true}

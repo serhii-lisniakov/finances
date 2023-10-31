@@ -1,8 +1,8 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../hook";
-import {addGoal, changeGoal, getGoals, removeGoal, updateGoal} from "../../store/goalsSlice";
+import {addGoal, changeGoal, getGoals, removeGoal, updateGoal} from "./goalsSlice";
 import {ColumnCellTemplateData, CustomSummaryInfo} from "devextreme/ui/data_grid";
-import {Goal} from "../../models/Goal";
+import {Goal} from "./Goal";
 import CustomStore from "devextreme/data/custom_store";
 import {Icon} from "../../components/Icon";
 import {useWithUID} from "../../hooks/useWithUID";
@@ -18,6 +18,7 @@ import {
     Paging,
 } from "devextreme-react/data-grid";
 import {Button} from "devextreme-react/button";
+import {DataGridMobileTitle} from "../../components/DataGridMobileTitle";
 
 const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
     const totalName = options.name;
@@ -99,6 +100,9 @@ export const Goals: React.FC = () => {
             noDataText="You have no goals. Add it right know."
         >
             <Toolbar>
+                <Item location="before">
+                    <DataGridMobileTitle>Goals</DataGridMobileTitle>
+                </Item>
                 <Item location="after">
                     <Button
                         text={`${showCompleted ? "Hide" : "Show"} Completed`}

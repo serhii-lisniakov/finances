@@ -1,11 +1,11 @@
 import React, {memo, useEffect} from "react";
-import {useAppDispatch, useAppSelector} from "../hook";
-import {getCurrency} from "../store/currencySlice";
+import {useAppDispatch, useAppSelector} from "../../hook";
+import {getCurrency} from "./currencySlice";
 import {Button} from "devextreme-react/button";
 
 type Props = {};
 
-const Currency: React.FC<Props> = () => {
+const CurrencySelector: React.FC<Props> = () => {
     const {price} = useAppSelector((state) => state.currency);
     const dispatch = useAppDispatch();
 
@@ -16,4 +16,4 @@ const Currency: React.FC<Props> = () => {
     return <Button>{+price.toFixed(2)} UAH</Button>;
 };
 
-export default memo(Currency);
+export default memo(CurrencySelector);

@@ -1,9 +1,9 @@
 import React from "react";
-import {useAppDispatch, useAppSelector} from "../hook";
-import {toggle} from "../store/themeSlice";
-import {Icon} from "./Icon";
+import {useAppDispatch, useAppSelector} from "../../hook";
+import {toggle} from "./themeSlice";
+import {Icon} from "../../components/Icon";
 import themes from "devextreme/ui/themes";
-import {Themes} from "../enums/Themes";
+import {Themes} from "../../enums/Themes";
 
 const icons: {
     [key in Themes]: {
@@ -24,7 +24,7 @@ const icons: {
     },
 };
 
-export const ThemeToggle = () => {
+export const ThemeSelector = () => {
     const {theme} = useAppSelector((state) => state.theme);
     const dispatch = useAppDispatch();
 

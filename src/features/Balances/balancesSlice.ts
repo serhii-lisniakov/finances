@@ -1,8 +1,8 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "./index";
+import {RootState} from "../../store";
 import {doc, getDoc, setDoc} from "firebase/firestore";
-import {db} from "../firebase";
-import {UID} from "../models/UID";
+import {db} from "../../firebase";
+import {UID} from "../../models/UID";
 
 type UpdateBalance = {
     name: keyof BalancesState;
