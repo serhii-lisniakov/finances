@@ -15,6 +15,7 @@ import {Credit} from "./Credit";
 import CustomStore from "devextreme/data/custom_store";
 import {useWithUID} from "../../hooks/useWithUID";
 import {DataGridMobileTitle} from "../../components/DataGridMobileTitle";
+import {useTranslation} from "react-i18next";
 
 export const Credits: React.FC = () => {
     const uid = useWithUID();
@@ -22,6 +23,8 @@ export const Credits: React.FC = () => {
     const {price} = useAppSelector((state) => state.currency);
     const dispatch = useAppDispatch();
     const dataGrid = useRef<DataGrid>(null);
+    const {t} = useTranslation();
+    const {t: tC} = useTranslation("feature_credits");
 
     const customDataSource = useMemo(
         () =>
@@ -61,11 +64,11 @@ export const Credits: React.FC = () => {
             showColumnLines={false}
             height="100%"
             repaintChangesOnly
-            noDataText="You have no payments. A lucky one!"
+            noDataText={tC("noDataText")}
         >
             <Toolbar>
                 <Item location="before">
-                    <DataGridMobileTitle>Expenses</DataGridMobileTitle>
+                    <DataGridMobileTitle>{tC("title")}</DataGridMobileTitle>
                 </Item>
                 <Item name="addRowButton" />
             </Toolbar>
@@ -79,7 +82,7 @@ export const Credits: React.FC = () => {
             />
             <Column
                 dataField="title"
-                caption="Name"
+                caption={t("name")}
                 dataType="string"
                 sortOrder="asc"
             />

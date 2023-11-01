@@ -2,6 +2,7 @@ import React from "react";
 import {Button} from "devextreme-react/button";
 import {signInWithPopup} from "firebase/auth";
 import {auth, googleProvider} from "../../firebase";
+import {useTranslation} from "react-i18next";
 
 const signIn = async () => {
     try {
@@ -12,5 +13,7 @@ const signIn = async () => {
 };
 
 export const Login: React.FC = () => {
-    return <Button onClick={signIn}>Sign in with Google</Button>;
+    const {t} = useTranslation();
+
+    return <Button onClick={signIn}>{t("sign-in")}</Button>;
 };

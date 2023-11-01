@@ -2,6 +2,7 @@ import React from "react";
 import {ThemeSelector} from "../features/ThemeSelector/ThemeSelector";
 import CurrencySelector from "../features/CurrencySelector/CurrencySelector";
 import {Logout} from "../features/Auth/Logout";
+import {LanguageSelector} from "../features/LanguageSelector/LanguageSelector";
 
 export const Header = () => {
     return (
@@ -9,6 +10,7 @@ export const Header = () => {
             <ThemeSelector />
             <Logout />
             <span className="ml-auto"></span>
+            <LanguageSelector />
             <CurrencySelector />
         </div>
     );

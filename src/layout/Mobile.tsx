@@ -4,8 +4,11 @@ import {Balances} from "../features/Balances/Balances";
 import {Timeline} from "../features/Timeline/Timeline";
 import {Goals} from "../features/Goals/Goals";
 import {Credits} from "../features/Credits/Credits";
+import {useTranslation} from "react-i18next";
 
 export const Mobile = () => {
+    const {t} = useTranslation();
+
     return (
         <div className="grid grid-cols-1 grid-rows-[minmax(400px,_1fr)] overflow-y-auto">
             <TabPanel
@@ -17,15 +20,15 @@ export const Mobile = () => {
                     component={Balances}
                 />
                 <Item
-                    title="Timeline"
+                    title={t("title", {ns: "feature_timeline"})}
                     component={Timeline}
                 />
                 <Item
-                    title="Goals"
+                    title={t("title", {ns: "feature_goals"})}
                     component={Goals}
                 />
                 <Item
-                    title="Expenses"
+                    title={t("title", {ns: "feature_credits"})}
                     component={Credits}
                 />
             </TabPanel>

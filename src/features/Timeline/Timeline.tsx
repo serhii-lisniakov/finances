@@ -1,17 +1,20 @@
 import React, {useRef, useState} from "react";
 import {
-    DataGrid,
-    Column,
-    Editing,
     Button as GridButton,
+    Column,
+    DataGrid,
+    Editing,
     Item,
     Toolbar,
 } from "devextreme-react/data-grid";
 import {DataGridMobileTitle} from "../../components/DataGridMobileTitle";
+import {useTranslation} from "react-i18next";
 
 export const Timeline = () => {
-    const [state, setState] = useState([]);
+    const [state] = useState([]);
     const dataGrid = useRef<DataGrid>(null);
+    const {t} = useTranslation();
+    const {t: tF} = useTranslation("feature_timeline");
 
     return (
         <DataGrid
@@ -24,11 +27,11 @@ export const Timeline = () => {
             height="100%"
             columnAutoWidth={true}
             repaintChangesOnly
-            noDataText="Start adding expenses rignt now..."
+            noDataText={tF("noDataText")}
         >
             <Toolbar>
                 <Item location="before">
-                    <DataGridMobileTitle>Timeline</DataGridMobileTitle>
+                    <DataGridMobileTitle>{tF("title")}</DataGridMobileTitle>
                 </Item>
                 <Item name="addRowButton" />
             </Toolbar>
@@ -42,12 +45,12 @@ export const Timeline = () => {
             />
             <Column
                 dataField="name"
-                caption="Name"
+                caption={t("name")}
                 dataType="string"
             />
             <Column
                 dataField="date"
-                caption="Date"
+                caption={t("date")}
                 dataType="date"
                 format="monthAndDay"
                 sortOrder="desc"

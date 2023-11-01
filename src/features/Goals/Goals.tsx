@@ -19,6 +19,7 @@ import {
 } from "devextreme-react/data-grid";
 import {Button} from "devextreme-react/button";
 import {DataGridMobileTitle} from "../../components/DataGridMobileTitle";
+import {useTranslation} from "react-i18next";
 
 const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
     const totalName = options.name;
@@ -56,6 +57,8 @@ export const Goals: React.FC = () => {
     const dispatch = useAppDispatch();
     const dataGrid = useRef<DataGrid>(null);
     const [showCompleted, setShowCompleted] = useState<boolean>(false);
+    const {t} = useTranslation();
+    const {t: tF} = useTranslation("feature_credits");
 
     const customDataSource = useMemo(
         () =>
@@ -97,11 +100,11 @@ export const Goals: React.FC = () => {
             repaintChangesOnly
             columnAutoWidth={true}
             wordWrapEnabled={true}
-            noDataText="You have no goals. Add it right know."
+            noDataText={tF("noDataText")}
         >
             <Toolbar>
                 <Item location="before">
-                    <DataGridMobileTitle>Goals</DataGridMobileTitle>
+                    <DataGridMobileTitle>{tF("title")}</DataGridMobileTitle>
                 </Item>
                 <Item location="after">
                     <Button
@@ -154,7 +157,7 @@ export const Goals: React.FC = () => {
             />
             <Column
                 dataField="title"
-                caption="Name"
+                caption={t("name")}
                 dataType="string"
                 sortOrder="asc"
             />
