@@ -4,5 +4,12 @@
     "loading": "Завантаження",
     "name": "Назва",
     "sign-in": "Увійти з Google",
-    "sign-out": "Вийти"
+    "sign-out": "Вийти",
+    "income": "Дохід",
+    "expenses": "Витрати",
+    "savings": "Збереження",
+    "total_one": "Сумарний",
+    "total_other": "Сумарні",
+    "accumulate": "Аккум",
+    "month": "Місяць"
 }

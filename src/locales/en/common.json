@@ -4,5 +4,12 @@
     "loading": "Loading",
     "name": "Name",
     "sign-in": "Sign in with Google",
-    "sign-out": "Sign Out"
+    "sign-out": "Sign Out",
+    "income": "Income",
+    "expenses": "Expenses",
+    "savings": "Savings",
+    "total_one": "Total",
+    "total_other": "Total",
+    "accumulate": "Acc",
+    "month": "Month"
 }
