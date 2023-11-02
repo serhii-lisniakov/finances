@@ -15,7 +15,7 @@ export const Logout: React.FC = () => {
     const {t} = useTranslation();
 
     if (!user) {
-        return <Navigate to="/" />;
+        return <Navigate to="/auth" />;
     }
 
     return (

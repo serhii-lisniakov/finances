@@ -9,7 +9,7 @@ import {Layout} from "../layout/Layout";
 
 const loader = () => {
     if (!auth.currentUser) {
-        return redirect("/");
+        return redirect("/auth");
     }
     return null;
 };
@@ -19,11 +19,8 @@ const router = createBrowserRouter([
         path: "/",
         element: <Layout />,
         errorElement: <NotFound />,
+        loader,
         children: [
-            {
-                path: "/",
-                element: <Auth />,
-            },
             {
                 path: "home",
                 element: <Home />,
@@ -35,6 +32,10 @@ const router = createBrowserRouter([
                 loader,
             },
         ],
+    },
+    {
+        path: "/auth",
+        element: <Auth />,
     },
 ]);
 

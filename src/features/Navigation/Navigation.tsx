@@ -1,42 +1,38 @@
-import React, {useMemo} from "react";
-import {Tabs} from "devextreme-react/tabs";
+import React, {useState} from "react";
+import {Tabs, Item} from "devextreme-react/tabs";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 
-export const Navigation = () => {
+export const Navigation: React.FC = () => {
     const navigate = useNavigate();
     const {t} = useTranslation();
-
-    const tabs = useMemo(
-        () => [
-            {
-                id: 0,
-                path: "home",
-                text: t("home"),
-                icon: "home",
-            },
-            {
-                id: 1,
-                path: "settings",
-                text: t("settings"),
-                icon: "preferences",
-            },
-        ],
-        [],
-    );
+    const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
     return (
         <Tabs
-            dataSource={tabs}
-            defaultSelectedIndex={0}
+            selectedIndex={selectedIndex}
             scrollingEnabled={false}
             onSelectedItemChange={(e) => {
                 if (!e) {
                     return;
                 }
-                navigate(e.path);
+                setSelectedIndex(e["data-id"]);
+                navigate(e["data-path"]);
             }}
             width="100%"
-        />
+        >
+            <Item
+                text={t("home")}
+                icon="home"
+                data-id={0}
+                data-path="home"
+            />
+            <Item
+                text={t("settings")}
+                icon="preferences"
+                data-id={1}
+                data-path="settings"
+            />
+        </Tabs>
     );
 };

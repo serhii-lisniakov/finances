@@ -4,6 +4,7 @@ import {signInWithPopup} from "firebase/auth";
 import {auth, googleProvider} from "../../firebase";
 import {useTranslation} from "react-i18next";
 import {redirect} from "react-router-dom";
+import {Google} from "../../components/svg/Google";
 
 const signIn = async () => {
     try {
@@ -17,5 +18,15 @@ const signIn = async () => {
 export const Login: React.FC = () => {
     const {t} = useTranslation();
 
-    return <Button onClick={signIn}>{t("sign-in")}</Button>;
+    return (
+        <Button
+            onClick={signIn}
+            className="text-xl"
+        >
+            {t("sign-in")} {t("with")}
+            <span className="h-[50px] w-[50px]">
+                <Google />
+            </span>
+        </Button>
+    );
 };
