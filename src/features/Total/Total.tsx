@@ -9,7 +9,7 @@ import {Totals} from "./Totals";
 export const Total = () => {
     const [user] = useAuthState(auth);
     const dispatch = useAppDispatch();
-    const [expanded, setExpanded] = useState<boolean>(true);
+    const [opened, setOpened] = useState<boolean>(true);
 
     const {bank, cash, crypto} = useAppSelector((state) => state.balances);
 
@@ -18,24 +18,24 @@ export const Total = () => {
     }, []);
 
     const toggleExpanded = useCallback(() => {
-        setExpanded((prev) => !prev);
+        setOpened((prev) => !prev);
     }, []);
 
     return (
-        <div className="dx-theme-background-color grid gap-1 px-2 py-1">
+        <div className="grid bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% px-2 py-1">
             <div
                 onClick={toggleExpanded}
-                className="cursor-pointer text-right text-3xl font-bold"
+                className="cursor-pointer text-right text-3xl font-bold text-[#dedede]"
             >
                 ${bank + cash + crypto}
                 <Icon
-                    icon={expanded ? "spinup" : "spindown"}
+                    icon={opened ? "spinup" : "spindown"}
                     className="relative -top-1"
                 />
             </div>
             <div
-                className={`transition-[max-height] duration-200 ${
-                    expanded ? "max-h-[500px]" : "max-h-0"
+                className={`overflow-hidden transition-[max-height] duration-200 ${
+                    opened ? "h-auto max-h-[500px]" : "h-0 max-h-0"
                 }`}
             >
                 <Totals />

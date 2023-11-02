@@ -1,24 +1,19 @@
-import {createGlobalStyle} from "styled-components";
-import "tailwindcss/base.css";
-import "tailwindcss/components.css";
-import "tailwindcss/utilities.css";
-
-export const GlobalStyles = createGlobalStyle`
-  * {
+* {
     margin: 0;
     box-sizing: border-box;
     font-family: inherit;
-  }
+}
 
-  * :before, * :after {
+* :before,
+* :after {
     box-sizing: border-box;
-  }
+}
 
-  #root {
+#root {
     height: 100%;
-  }
-  
-  body {
+}
+
+body {
     height: 100dvh;
     width: 100dvw;
     overflow: hidden;
@@ -26,15 +21,16 @@ export const GlobalStyles = createGlobalStyle`
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
+    background: black;
+    border-radius: 10px;
+}
 
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-  }
+}
 
-  input[type="number"] {
+input[type="number"] {
     -moz-appearance: textfield;
-  }
-`;
+}

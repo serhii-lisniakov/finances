@@ -3,7 +3,7 @@ import {LocalStorage} from "../../enums/LocalStorage";
 import {Themes} from "../../enums/Themes";
 
 const initialState: {theme: Themes} = {
-    theme: (localStorage.getItem(LocalStorage.Theme) as Themes) || "light",
+    theme: (localStorage.getItem(LocalStorage.Theme) as Themes) || "dark",
 };
 
 const themeSlice = createSlice({

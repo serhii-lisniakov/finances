@@ -11,5 +11,7 @@
     "total_one": "Total",
     "total_other": "Total",
     "accumulate": "Acc",
-    "month": "Month"
+    "month": "Month",
+    "home": "Home",
+    "settings": "Settings"
 }

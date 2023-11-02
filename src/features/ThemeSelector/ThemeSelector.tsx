@@ -4,6 +4,7 @@ import {toggle} from "./themeSlice";
 import {Icon} from "../../components/Icon";
 import themes from "devextreme/ui/themes";
 import {Themes} from "../../enums/Themes";
+import {Button} from "devextreme-react/button";
 
 const icons: {
     [key in Themes]: {
@@ -19,7 +20,7 @@ const icons: {
     },
     [Themes.Light]: {
         name: Themes.Light,
-        className: "text-black",
+        className: "",
         icon: "moon",
     },
 };
@@ -29,14 +30,19 @@ export const ThemeSelector = () => {
     const dispatch = useAppDispatch();
 
     return (
-        <Icon
+        <Button
             onClick={() => {
                 const newTheme = theme === Themes.Light ? Themes.Dark : Themes.Light;
                 dispatch(toggle(newTheme));
                 themes.current(`generic.${newTheme}`);
             }}
-            icon={icons[theme].icon}
-            className={icons[theme].className}
+            className="rounded-full"
+            render={() => (
+                <Icon
+                    icon={icons[theme].icon}
+                    className={icons[theme].className}
+                />
+            )}
         />
     );
 };

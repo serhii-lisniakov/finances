@@ -20,8 +20,8 @@
         "react-firebase-hooks": "^5.0.3",
         "react-i18next": "^13.3.1",
         "react-redux": "^8.0.4",
+        "react-router-dom": "^6.18.0",
         "react-scripts": "5.0.1",
-        "styled-components": "^5.3.5",
         "typescript": "^5.2.2",
         "web-vitals": "^2.1.4"
     },
@@ -50,9 +50,13 @@
         ]
     },
     "devDependencies": {
-        "@types/styled-components": "^5.1.26",
         "prettier": "3.0.3",
         "prettier-plugin-tailwindcss": "^0.5.6",
         "tailwindcss": "^3.3.3"
+    },
+    "overrides": {
+        "react-scripts": {
+            "typescript": "^5"
+        }
     }
 }

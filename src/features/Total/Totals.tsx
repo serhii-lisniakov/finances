@@ -1,17 +1,19 @@
 import React from "react";
+import "./Totals.css";
 import {Form, SimpleItem} from "devextreme-react/form";
-import {NumberBox} from "devextreme-react";
+import {NumberBox} from "devextreme-react/number-box";
 import {useTranslation} from "react-i18next";
 
 export const Totals: React.FC = () => {
     const {t} = useTranslation();
 
     return (
-        <div className="dx-theme-background-color relative h-full p-2">
+        <div className="p-2">
             <Form
                 showColonAfterLabel={false}
                 scrollingEnabled={true}
                 labelMode="floating"
+                className=""
             >
                 <SimpleItem>
                     <div className="flex gap-1">

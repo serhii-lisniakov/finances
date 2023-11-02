@@ -6,6 +6,7 @@ import ua_common from "./locales/ua/common.json";
 import feature_goals from "./features/Goals/locales";
 import feature_credits from "./features/Credits/locales";
 import feature_timeline from "./features/Timeline/locales";
+import feature_savings from "./features/Savings/locales";
 
 export const resources = {
     en: {
@@ -13,12 +14,14 @@ export const resources = {
         feature_timeline: feature_timeline.en,
         feature_credits: feature_credits.en,
         feature_goals: feature_goals.en,
+        feature_savings: feature_savings.en,
     },
     ua: {
         common: ua_common,
         feature_timeline: feature_timeline.ua,
         feature_credits: feature_credits.ua,
         feature_goals: feature_goals.ua,
+        feature_savings: feature_savings.ua,
     },
 } as const;
 

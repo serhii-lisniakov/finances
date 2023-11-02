@@ -1,0 +1,14 @@
+.dx-texteditor.dx-editor-outlined {
+    background: transparent;
+    font-weight: bold;
+}
+
+.dx-texteditor.dx-editor-outlined .dx-texteditor-label {
+    color: #dedede;
+}
+
+.dx-texteditor.dx-editor-outlined.dx-texteditor-with-label.dx-state-readonly .dx-texteditor-label .dx-label-before,
+.dx-texteditor.dx-editor-outlined.dx-texteditor-with-label.dx-state-readonly .dx-texteditor-label .dx-label-after,
+.dx-texteditor.dx-editor-outlined.dx-texteditor-with-label.dx-state-readonly .dx-texteditor-label .dx-label {
+    border-color: #b2b2b2;
+}
