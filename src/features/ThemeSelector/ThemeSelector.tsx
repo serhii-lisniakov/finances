@@ -2,9 +2,9 @@ import React from "react";
 import {useAppDispatch, useAppSelector} from "../../hook";
 import {toggle} from "./themeSlice";
 import {Icon} from "../../components/Icon";
-import themes from "devextreme/ui/themes";
 import {Themes} from "../../enums/Themes";
 import {Button} from "devextreme-react/button";
+import {enableTheme} from "../../styles/Styles";
 
 const icons: {
     [key in Themes]: {
@@ -33,8 +33,8 @@ export const ThemeSelector = () => {
         <Button
             onClick={() => {
                 const newTheme = theme === Themes.Light ? Themes.Dark : Themes.Light;
+                enableTheme(newTheme);
                 dispatch(toggle(newTheme));
-                themes.current(`generic.${newTheme}`);
             }}
             className="rounded-full"
             render={() => (

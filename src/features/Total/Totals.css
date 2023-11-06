@@ -12,3 +12,7 @@
 .dx-texteditor.dx-editor-outlined.dx-texteditor-with-label.dx-state-readonly .dx-texteditor-label .dx-label {
     border-color: #b2b2b2;
 }
+
+.dx-texteditor-input {
+    color: #dedede;
+}

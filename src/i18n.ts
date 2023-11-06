@@ -28,7 +28,6 @@ export const resources = {
 export const defaultNS = "common";
 
 i18n.use(initReactI18next).init({
-    ns: ["common", "feature_timeline", "feature_credits"],
     fallbackLng: "en",
     debug: true,
     lng: (localStorage.getItem("lang") as string) || "en",
