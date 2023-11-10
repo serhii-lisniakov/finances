@@ -4,7 +4,7 @@ import en_common from "./locales/en/common.json";
 import ua_common from "./locales/ua/common.json";
 
 import feature_goals from "./features/Goals/locales";
-import feature_credits from "./features/Credits/locales";
+import feature_credits from "./features/IncomesExpenses/locales";
 import feature_timeline from "./features/Timeline/locales";
 import feature_savings from "./features/Savings/locales";
 

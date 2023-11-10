@@ -1,6 +1,6 @@
 import React, {memo, useEffect} from "react";
 import {useAppDispatch, useAppSelector} from "../../hook";
-import {getCurrency} from "./currencySlice";
+import {getCurrency} from "./store";
 import {Button} from "devextreme-react/button";
 
 type Props = {};

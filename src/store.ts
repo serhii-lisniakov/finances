@@ -1,17 +1,17 @@
 import {configureStore} from "@reduxjs/toolkit";
-import themeReducer from "./features/ThemeSelector/themeSlice";
-import goalsReducer from "./features/Goals/goalsSlice";
-import currencyReducer from "./features/CurrencySelector/currencySlice";
-import balancesReducer from "./features/Balances/balancesSlice";
-import creditsReducer from "./features/Credits/creditsSlice";
+import themeReducer from "./features/ThemeSelector/store";
+import goalsReducer from "./features/Goals/store";
+import currencyReducer from "./features/CurrencySelector/store";
+import totalsReducer from "./features/Total/store";
+import incomesExpensesSlice from "./features/IncomesExpenses/store";
 
 export const store = configureStore({
     reducer: {
         theme: themeReducer,
         goals: goalsReducer,
         currency: currencyReducer,
-        balances: balancesReducer,
-        credits: creditsReducer,
+        totals: totalsReducer,
+        incomesExpenses: incomesExpensesSlice,
     },
 });
 

@@ -1,0 +1,28 @@
+.totals .dx-texteditor {
+    background: transparent;
+    font-weight: bold;
+}
+
+.totals .dx-texteditor-label,
+.totals .dx-texteditor-input {
+    color: #dedede;
+}
+
+.totals .dx-texteditor div[class^='dx-label'] {
+    border-color: #b2b2b2 !important;
+}
+
+.totals .balance {
+    margin-top: 0;
+    pointer-events: none;
+}
+
+.totals .balance.dx-texteditor div[class^='dx-label'] {
+    border-color: transparent !important;
+}
+
+.totals .balance .dx-texteditor-input {
+    font-size: 2em;
+    padding: 0;
+    text-align: end;
+}

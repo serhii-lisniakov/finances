@@ -1,6 +1,6 @@
 import React from "react";
 import {useAppDispatch, useAppSelector} from "../../hook";
-import {toggle} from "./themeSlice";
+import {toggle} from "./store";
 import {Icon} from "../../components/Icon";
 import {Themes} from "../../enums/Themes";
 import {Button} from "devextreme-react/button";

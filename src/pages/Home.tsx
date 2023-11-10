@@ -3,7 +3,7 @@ import {Total} from "../features/Total/Total";
 import {useMediaQuery} from "../hooks/useMediaQuery";
 import {Timeline} from "../features/Timeline/Timeline";
 import {Goals} from "../features/Goals/Goals";
-import {Credits} from "../features/Credits/Credits";
+import {IncomesExpenses} from "../features/IncomesExpenses/IncomesExpenses";
 import {useTranslation} from "react-i18next";
 import {Item, TabPanel} from "devextreme-react/tab-panel";
 import {Savings} from "../features/Savings/Savings";
@@ -21,7 +21,7 @@ export const Desktop: React.FC = () => {
                 <Goals />
             </div>
             <div className="dx-card shadow-lg">
-                <Credits />
+                <IncomesExpenses />
             </div>
         </div>
     );
@@ -34,7 +34,7 @@ export const Mobile: React.FC = () => {
         <div className="grid grid-cols-1 grid-rows-[minmax(400px,_1fr)] overflow-y-auto">
             <TabPanel
                 showNavButtons={true}
-                defaultSelectedIndex={1}
+                defaultSelectedIndex={3}
                 scrollingEnabled={false}
             >
                 <Item
@@ -51,7 +51,7 @@ export const Mobile: React.FC = () => {
                 />
                 <Item
                     title={t("title", {ns: "feature_credits"})}
-                    component={Credits}
+                    component={IncomesExpenses}
                 />
             </TabPanel>
         </div>

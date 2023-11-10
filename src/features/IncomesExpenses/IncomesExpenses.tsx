@@ -1,11 +1,7 @@
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef} from "react";
+import "./styles.css";
 import {useAppDispatch, useAppSelector} from "../../hook";
-import {addItem, changeItem, getDataSource, deleteItem, updateItem} from "./store";
-import {ColumnCellTemplateData, CustomSummaryInfo} from "devextreme/ui/data_grid";
-import {Goal} from "./Goal";
-import CustomStore from "devextreme/data/custom_store";
-import {Icon} from "../../components/Icon";
-import {useWithUID} from "../../hooks/useWithUID";
+import {addItem, changeItem, deleteItem, getDataSource, updateItem} from "./store";
 import {
     Button as GridButton,
     Column,
@@ -15,67 +11,107 @@ import {
     Summary,
     Toolbar,
     TotalItem,
-    Paging,
 } from "devextreme-react/data-grid";
-import {Button} from "devextreme-react/button";
+import {IncomeExpense} from "./IncomeExpense";
+import CustomStore from "devextreme/data/custom_store";
+import {useWithUID} from "../../hooks/useWithUID";
 import {DataGridMobileTitle} from "../../components/DataGridMobileTitle";
 import {useTranslation} from "react-i18next";
+import {
+    CellPreparedEvent,
+    ColumnCellTemplateData,
+    CustomSummaryInfo,
+    EditorPreparingEvent,
+} from "devextreme/ui/data_grid";
+import {Icon} from "../../components/Icon";
 import {useTableToggle} from "../../hooks/useTableToggle";
+
+const onCellPrepared = (e: CellPreparedEvent<IncomeExpense, number>) => {
+    if (e.rowType !== "data") {
+        return;
+    }
+
+    if (e.data.isDisabled) {
+        e.cellElement.classList.add("dark:text-gray-700", "text-gray-300");
+        return;
+    }
+
+    if (
+        !e.data.isExpense &&
+        e.data.price &&
+        (e.column.dataField as keyof IncomeExpense) !== "taxesPercent"
+    ) {
+        e.cellElement.classList.add("text-green-500");
+    }
+};
+
+const onEditorPreparing = (e: EditorPreparingEvent<IncomeExpense, number>) => {
+    if (e.row?.rowType !== "data") {
+        return;
+    }
+
+    if ((e.dataField as keyof IncomeExpense) === "taxesPercent" && e.row.data.isExpense) {
+        e.cancel = true;
+    }
+};
 
 const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
     const totalName = options.name;
     const start = options.summaryProcess === "start";
     const calc = options.summaryProcess === "calculate";
     const finalize = options.summaryProcess === "finalize";
-    const goal: Goal = options.value;
+    const item: IncomeExpense = options.value;
 
     if (start) {
         options.totalValue = 0;
         options.totals = {
-            hotTotal: 0,
+            incomes: 0,
+            expenses: 0,
         };
     }
 
     switch (true) {
-        case totalName === "total" && calc:
-            options.totalValue += goal.isCompleted ? 0 : goal.price;
+        case totalName === "incomes" && calc:
+            options.totalValue +=
+                item.isDisabled || item.isExpense
+                    ? 0
+                    : item.price - item.price * (item.taxesPercent || 1);
             break;
-        case totalName === "hotTotal" && calc:
-            options.totalValue += goal.isFavourite ? goal.price : 0;
+        case totalName === "incomes" && finalize:
+            break;
+
+        case totalName === "expenses" && calc:
+            options.totalValue += item.isDisabled || item.isExpense ? item.price : 0;
+            break;
+        case totalName === "expenses" && finalize:
             break;
     }
 };
 
-const changeStatus = (e: ColumnCellTemplateData<Goal, Goal>) => {
-    e.component.cellValue(e.row.rowIndex, e.column.dataField!, !e.value);
-    e.component.saveEditData();
-};
-
-export const Goals: React.FC = () => {
+export const IncomesExpenses: React.FC = () => {
     const uid = useWithUID();
-    const {dataSource} = useAppSelector((state) => state.goals);
+    const {dataSource} = useAppSelector((state) => state.incomesExpenses);
     const {price} = useAppSelector((state) => state.currency);
     const dispatch = useAppDispatch();
     const dataGrid = useRef<DataGrid>(null);
-    const [showCompleted, setShowCompleted] = useState<boolean>(false);
     const {t} = useTranslation();
-    const {t: tF} = useTranslation("feature_credits");
-    const toggle = useTableToggle<Goal, Goal>();
+    const {t: tC} = useTranslation("feature_credits");
+    const toggle = useTableToggle<IncomeExpense, IncomeExpense>();
 
     const customDataSource = useMemo(
         () =>
-            new CustomStore<Goal, number>({
+            new CustomStore<IncomeExpense, number>({
                 key: "id",
                 loadMode: "raw",
                 load: () => {
                     return dataSource;
                 },
-                insert: async (g) => {
-                    await dispatch(addItem({...g, ...uid}));
-                    return g;
+                insert: async (c) => {
+                    await dispatch(addItem({...c, ...uid}));
+                    return c;
                 },
                 update: async (id, values) => {
-                    const property = Object.keys(values)[0] as keyof Goal;
+                    const property = Object.keys(values)[0] as keyof IncomeExpense;
                     dispatch(changeItem({id, value: values[property], property}));
                     await dispatch(updateItem({id, ...uid}));
                 },
@@ -92,6 +128,8 @@ export const Goals: React.FC = () => {
 
     return (
         <DataGrid
+            onCellPrepared={onCellPrepared}
+            onEditorPreparing={onEditorPreparing}
             ref={dataGrid}
             dataSource={customDataSource}
             rowAlternationEnabled={true}
@@ -100,20 +138,12 @@ export const Goals: React.FC = () => {
             showColumnLines={false}
             height="100%"
             repaintChangesOnly
-            columnAutoWidth={true}
-            wordWrapEnabled={true}
-            noDataText={tF("noDataText")}
+            noDataText={tC("noDataText")}
+            className="incomes"
         >
             <Toolbar>
                 <Item location="before">
-                    <DataGridMobileTitle>{tF("title")}</DataGridMobileTitle>
-                </Item>
-                <Item location="after">
-                    <Button
-                        text={`${showCompleted ? "Hide" : "Show"} Completed`}
-                        onClick={() => setShowCompleted(!showCompleted)}
-                        visible={dataSource.some((g) => g.isCompleted)}
-                    />
+                    <DataGridMobileTitle>{tC("title")}</DataGridMobileTitle>
                 </Item>
                 <Item name="addRowButton" />
             </Toolbar>
@@ -125,15 +155,12 @@ export const Goals: React.FC = () => {
                 confirmDelete={true}
                 useIcons={true}
             />
-            <Paging defaultPageSize={100} />
-
             <Column
                 allowSorting={false}
                 alignment="center"
-                calculateSortValue={(e: Goal) => (e.isCompleted ? 999 : 0)}
+                calculateSortValue={(e: IncomeExpense) => (e.isDisabled ? 999 : 0)}
                 caption=""
-                dataField="isCompleted"
-                filterValue={showCompleted ? null : false}
+                dataField="isDisabled"
                 width={30}
                 sortOrder="asc"
             />
@@ -141,17 +168,17 @@ export const Goals: React.FC = () => {
                 allowEditing={false}
                 allowSorting={false}
                 alignment="center"
-                calculateSortValue={(e: Goal) => (e.isFavourite ? 0 : 1)}
+                calculateSortValue={(e: IncomeExpense) => (e.isExpense ? 1 : 0)}
                 caption=""
                 cssClass="!px-0 !align-middle"
-                dataField="isFavourite"
+                dataField="isExpense"
                 width={20}
-                cellRender={(e: ColumnCellTemplateData<Goal, Goal>) =>
-                    e.data!.isCompleted ? null : (
+                cellRender={(e: ColumnCellTemplateData<IncomeExpense, IncomeExpense>) =>
+                    e.data!.isDisabled ? null : (
                         <Icon
                             onClick={() => toggle(e)}
-                            icon="favorites"
-                            className={e.data!.isFavourite ? "text-amber-500" : "text-violet-300"}
+                            icon={e.data!.isExpense ? "export" : "download"}
+                            className={e.data!.isExpense ? "text-red-500" : "text-green-500"}
                         />
                     )
                 }
@@ -161,7 +188,6 @@ export const Goals: React.FC = () => {
                 dataField="title"
                 caption={t("name")}
                 dataType="string"
-                sortOrder="asc"
             />
             <Column
                 dataField="price"
@@ -173,16 +199,21 @@ export const Goals: React.FC = () => {
                 }}
                 format="currency"
                 alignment="right"
+                sortOrder="desc"
                 width={90}
             />
             <Column
-                allowEditing={false}
-                calculateCellValue={(g: Goal) => g.price * price || 0}
-                dataField="amountUAH"
-                caption="UAH"
-                format="#,##0"
-                alignment="right"
-                width={90}
+                allowSorting={false}
+                dataField="taxesPercent"
+                caption="Tax"
+                calculateDisplayValue={(e: IncomeExpense) => (e.isExpense ? "" : e.taxesPercent)}
+                dataType="number"
+                editorOptions={{
+                    format: "percent",
+                    useMaskBehaviour: true,
+                }}
+                format="percent"
+                width={50}
             />
             <Column
                 caption=""
@@ -195,21 +226,23 @@ export const Goals: React.FC = () => {
                 />
             </Column>
 
-            {/*// @ts-ignore*/}
+            {/*@ts-ignore*/}
             <Summary calculateCustomSummary={calculateTotals}>
                 <TotalItem
-                    name="hotTotal"
+                    name="incomes"
                     summaryType="custom"
-                    valueFormat="currency"
-                    displayFormat="★{0}"
+                    valueFormat="#,##0"
+                    displayFormat="{0}"
                     showInColumn="price"
+                    cssClass="text-green-500"
                 />
                 <TotalItem
-                    name="total"
+                    name="expenses"
                     summaryType="custom"
-                    valueFormat="currency"
-                    displayFormat="Σ{0}"
+                    valueFormat="#,##0"
+                    displayFormat="{0}"
                     showInColumn="price"
+                    cssClass="text-red-500"
                 />
             </Summary>
         </DataGrid>

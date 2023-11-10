@@ -6,7 +6,7 @@ const initialState: {theme: Themes} = {
     theme: (localStorage.getItem(LocalStorage.Theme) as Themes) || "dark",
 };
 
-const themeSlice = createSlice({
+const store = createSlice({
     name: "theme",
     initialState,
     reducers: {
@@ -17,6 +17,6 @@ const themeSlice = createSlice({
     },
 });
 
-export const {toggle} = themeSlice.actions;
+export const {toggle} = store.actions;
 
-export default themeSlice.reducer;
+export default store.reducer;

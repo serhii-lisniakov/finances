@@ -1,36 +1,28 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {useAppDispatch, useAppSelector} from "../../hook";
-import {useAuthState} from "react-firebase-hooks/auth";
-import {auth} from "../../firebase";
-import {getBalances} from "../Balances/balancesSlice";
+import React, {useState} from "react";
+import "./styles.css";
 import {Icon} from "../../components/Icon";
 import {Totals} from "./Totals";
+import {NumberBox} from "devextreme-react/number-box";
 
 export const Total = () => {
-    const [user] = useAuthState(auth);
-    const dispatch = useAppDispatch();
     const [opened, setOpened] = useState<boolean>(true);
 
-    const {bank, cash, crypto} = useAppSelector((state) => state.balances);
-
-    useEffect(() => {
-        dispatch(getBalances(user?.uid));
-    }, []);
-
-    const toggleExpanded = useCallback(() => {
-        setOpened((prev) => !prev);
-    }, []);
-
     return (
-        <div className="grid bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% px-2 py-1">
+        <div className="totals grid bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% px-2 py-1">
             <div
-                onClick={toggleExpanded}
-                className="cursor-pointer text-right text-3xl font-bold text-[#dedede]"
+                onClick={() => setOpened((prev) => !prev)}
+                className="flex cursor-pointer items-center justify-end gap-1 text-3xl font-bold text-[#dedede]"
             >
-                ${bank + cash + crypto}
+                <NumberBox
+                    format="currency"
+                    value={10000}
+                    label={" "}
+                    readOnly
+                    className="balance flex-grow"
+                />
                 <Icon
                     icon={opened ? "spinup" : "spindown"}
-                    className="relative -top-1"
+                    className="relative top-1"
                 />
             </div>
             <div
