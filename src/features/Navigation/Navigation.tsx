@@ -30,6 +30,7 @@ export const Navigation: React.FC = () => {
                 setSelectedIndex(e["data-index"]);
                 navigate(e["data-path"]);
             }}
+            className="nav dx-theme-border-color border-t-2"
         >
             {tabs.map((tab) => (
                 <Item
@@ -37,16 +38,11 @@ export const Navigation: React.FC = () => {
                     data-index={tab.index}
                     data-path={tab.path}
                     render={() => (
-                        <div
-                            className={`grid text-center ${
-                                tab.index === selectedIndex ? "text-amber-500" : ""
-                            }`}
-                        >
+                        <div className={`grid text-center`}>
                             <Icon
                                 icon={tab.icon}
                                 className="text-2xl"
                             />
-                            <span className="text-[0.75em]">{t(tab.t as any)}</span>
                         </div>
                     )}
                 />

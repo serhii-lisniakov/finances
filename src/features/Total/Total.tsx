@@ -8,7 +8,7 @@ export const Total = () => {
     const [opened, setOpened] = useState<boolean>(true);
 
     return (
-        <div className="totals grid bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% px-2 py-1">
+        <div className="totals grid bg-gradient-to-r from-indigo-600 from-10% via-sky-600 via-30% to-emerald-600 to-90% px-2 py-1">
             <div
                 onClick={() => setOpened((prev) => !prev)}
                 className="flex cursor-pointer items-center justify-end gap-1 text-3xl font-bold text-[#dedede]"
