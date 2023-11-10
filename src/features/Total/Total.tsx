@@ -3,9 +3,13 @@ import "./styles.css";
 import {Icon} from "../../components/Icon";
 import {Totals} from "./Totals";
 import {NumberBox} from "devextreme-react/number-box";
+import {useAppSelector} from "../../hook";
 
 export const Total = () => {
     const [opened, setOpened] = useState<boolean>(true);
+    const {dataSource} = useAppSelector((state) => state.savings);
+
+    const total = dataSource.reduce((acc, i) => (acc += i.amount), 0);
 
     return (
         <div className="totals grid bg-gradient-to-r from-indigo-600 from-10% via-sky-600 via-30% to-emerald-600 to-90% px-2 py-1">
@@ -15,7 +19,7 @@ export const Total = () => {
             >
                 <NumberBox
                     format="currency"
-                    value={10000}
+                    value={total}
                     label={" "}
                     readOnly
                     className="balance flex-grow"

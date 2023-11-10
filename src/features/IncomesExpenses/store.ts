@@ -6,40 +6,42 @@ import {deleteField, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
 import {db} from "../../firebase";
 import {RootState} from "../../store";
 
+/* Inputs */
+
+type Item = IncomeExpense;
+const NAME = "incomes_expenses";
+
+/* Inputs */
+
 type IUID = {uid: UID};
 
-type CreateItem = IUID & Partial<Omit<IncomeExpense, "id">>;
+type CreateItem = IUID & Partial<Omit<Item, "id">>;
 
 type UpdateItem = IUID & {id: number};
 
 type DeleteItem = IUID & {id: number};
 
 type State = {
-    dataSource: IncomeExpense[];
+    dataSource: Item[];
 };
-
-const NAME = "incomes_expenses";
 
 const itemDoc = (uid: string) => doc(db, NAME, uid);
 
-export const getDataSource = createAsyncThunk<IncomeExpense[], UID>(
-    `${NAME}/get`,
-    async function (uid) {
-        if (!uid) {
-            return [];
-        }
-        const doc = await getDoc(itemDoc(uid));
-        return Object.values(doc.data() || []) || [];
-    },
-);
+export const getDataSource = createAsyncThunk<Item[], UID>(`${NAME}/get`, async function (uid) {
+    if (!uid) {
+        return [];
+    }
+    const doc = await getDoc(itemDoc(uid));
+    return Object.values(doc.data() || []) || [];
+});
 
-export const addItem = createAsyncThunk<IncomeExpense | null, CreateItem>(
+export const addItem = createAsyncThunk<Item | null, CreateItem>(
     `${NAME}/post`,
     async function ({uid, ...rest}) {
         if (!uid) {
             return null;
         }
-        const item: IncomeExpense = {
+        const item: Item = {
             id: new Date().getTime(),
             title: rest.title || "",
             isExpense: rest.isExpense || false,
@@ -58,7 +60,7 @@ export const updateItem = createAsyncThunk<void, UpdateItem, {state: RootState}>
         if (!uid) {
             return;
         }
-        const item = getState().incomesExpenses.dataSource.find((c) => c.id === id);
+        const item = getState()[NAME].dataSource.find((c) => c.id === id);
         await setDoc(itemDoc(uid), {[id]: item}, {merge: true});
     },
 );
@@ -82,7 +84,7 @@ const slice = createSlice({
     name: NAME,
     initialState,
     reducers: {
-        changeItem: (state, {payload}: PayloadAction<PutEntity<IncomeExpense>>) => {
+        changeItem: (state, {payload}: PayloadAction<PutEntity<Item>>) => {
             const goal = state.dataSource.find((g) => g.id === payload.id);
             if (goal) {
                 goal[payload.property] = payload.value as never;

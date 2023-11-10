@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {Goal} from "./Goal";
+import {Saving} from "./Saving";
 import {PutEntity} from "../../models/PutEntity";
 import {deleteField, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
 import {UID} from "../../models/UID";
@@ -8,8 +8,8 @@ import {RootState} from "../../store";
 
 /* Inputs */
 
-type Item = Goal;
-const NAME = "goals";
+type Item = Saving;
+const NAME = "savings";
 
 /* Inputs */
 
@@ -44,9 +44,7 @@ export const addItem = createAsyncThunk<Item | null, CreateItem>(
         const item: Item = {
             id: new Date().getTime(),
             title: rest.title || "",
-            isFavourite: rest.isFavourite || false,
-            isCompleted: rest.isCompleted || false,
-            price: rest.price || 0,
+            amount: rest.amount || 0,
         };
         await setDoc(itemDoc(uid), {[item.id]: item}, {merge: true});
         return item;

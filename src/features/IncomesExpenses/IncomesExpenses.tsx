@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef} from "react";
+import React, {useEffect, useMemo} from "react";
 import "./styles.css";
 import {useAppDispatch, useAppSelector} from "../../hook";
 import {addItem, changeItem, deleteItem, getDataSource, updateItem} from "./store";
@@ -90,9 +90,8 @@ const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
 
 export const IncomesExpenses: React.FC = () => {
     const uid = useWithUID();
-    const {dataSource} = useAppSelector((state) => state.incomesExpenses);
+    const {dataSource} = useAppSelector((state) => state.incomes_expenses);
     const dispatch = useAppDispatch();
-    const dataGrid = useRef<DataGrid>(null);
     const {t} = useTranslation();
     const {t: tC} = useTranslation("feature_credits");
     const toggle = useTableToggle<IncomeExpense, IncomeExpense>();
@@ -129,7 +128,6 @@ export const IncomesExpenses: React.FC = () => {
         <DataGrid
             onCellPrepared={onCellPrepared}
             onEditorPreparing={onEditorPreparing}
-            ref={dataGrid}
             dataSource={customDataSource}
             rowAlternationEnabled={true}
             showBorders={false}
@@ -139,6 +137,7 @@ export const IncomesExpenses: React.FC = () => {
             repaintChangesOnly
             noDataText={tC("noDataText")}
             className="incomes"
+            wordWrapEnabled={true}
         >
             <Toolbar>
                 <Item location="before">
@@ -190,7 +189,7 @@ export const IncomesExpenses: React.FC = () => {
             />
             <Column
                 dataField="price"
-                caption="USD"
+                caption="Amount"
                 dataType="number"
                 editorOptions={{
                     format: "currency",
@@ -199,7 +198,7 @@ export const IncomesExpenses: React.FC = () => {
                 format="currency"
                 alignment="right"
                 sortOrder="desc"
-                width={90}
+                width={120}
             />
             <Column
                 allowSorting={false}

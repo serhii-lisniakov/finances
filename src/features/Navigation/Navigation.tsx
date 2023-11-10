@@ -28,7 +28,7 @@ export const Navigation: React.FC = () => {
                 setSelectedIndex(e["data-index"]);
                 navigate(e["data-path"]);
             }}
-            className="nav dx-theme-border-color border-t-2"
+            className="nav"
         >
             {tabs.map((tab) => (
                 <Item

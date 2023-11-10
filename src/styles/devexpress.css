@@ -19,15 +19,6 @@
     flex-direction: column-reverse;
 }
 
-.dx-tabpanel.dx-state-focused .dx-multiview-wrapper {
-    border: none;
-}
-
-.dx-tabs,
-.dx-tab {
-    box-shadow: none !important;
-}
-
 .dx-tab.dx-tab-selected .dx-tab-content,
 .dx-tab.dx-tab-selected .dx-tab-text {
     font-weight: 500;

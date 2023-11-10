@@ -1,6 +1,6 @@
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../hook";
-import {addItem, changeItem, getDataSource, deleteItem, updateItem} from "./store";
+import {addItem, changeItem, deleteItem, getDataSource, updateItem} from "./store";
 import {ColumnCellTemplateData, CustomSummaryInfo} from "devextreme/ui/data_grid";
 import {Goal} from "./Goal";
 import CustomStore from "devextreme/data/custom_store";
@@ -12,10 +12,10 @@ import {
     DataGrid,
     Editing,
     Item,
+    Paging,
     Summary,
     Toolbar,
     TotalItem,
-    Paging,
 } from "devextreme-react/data-grid";
 import {Button} from "devextreme-react/button";
 import {DataGridMobileTitle} from "../../components/DataGridMobileTitle";
@@ -49,9 +49,7 @@ const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
 export const Goals: React.FC = () => {
     const uid = useWithUID();
     const {dataSource} = useAppSelector((state) => state.goals);
-    const {price} = useAppSelector((state) => state.currency);
     const dispatch = useAppDispatch();
-    const dataGrid = useRef<DataGrid>(null);
     const [showCompleted, setShowCompleted] = useState<boolean>(false);
     const {t} = useTranslation();
     const {t: tF} = useTranslation("feature_credits");
@@ -87,7 +85,6 @@ export const Goals: React.FC = () => {
 
     return (
         <DataGrid
-            ref={dataGrid}
             dataSource={customDataSource}
             rowAlternationEnabled={true}
             showBorders={false}
@@ -160,22 +157,13 @@ export const Goals: React.FC = () => {
             />
             <Column
                 dataField="price"
-                caption="USD"
+                caption={t("price")}
                 dataType="number"
                 editorOptions={{
                     format: "currency",
                     useMaskBehaviour: true,
                 }}
                 format="currency"
-                alignment="right"
-                width={90}
-            />
-            <Column
-                allowEditing={false}
-                calculateCellValue={(g: Goal) => g.price * price || 0}
-                dataField="amountUAH"
-                caption="UAH"
-                format="#,##0"
                 alignment="right"
                 width={90}
             />

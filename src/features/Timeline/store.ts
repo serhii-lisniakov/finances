@@ -1,5 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {Goal} from "./Goal";
+import {TimelineItem} from "./TimelineItem";
 import {PutEntity} from "../../models/PutEntity";
 import {deleteField, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
 import {UID} from "../../models/UID";
@@ -8,14 +8,14 @@ import {RootState} from "../../store";
 
 /* Inputs */
 
-type Item = Goal;
-const NAME = "goals";
+type Item = TimelineItem;
+const NAME = "timelines";
 
 /* Inputs */
 
 type IUID = {uid: UID};
 
-type CreateItem = IUID & Partial<Omit<Item, "id">>;
+type CreateItem = IUID & Omit<Item, "id">;
 
 type UpdateItem = IUID & {id: number};
 
@@ -43,10 +43,8 @@ export const addItem = createAsyncThunk<Item | null, CreateItem>(
         }
         const item: Item = {
             id: new Date().getTime(),
-            title: rest.title || "",
-            isFavourite: rest.isFavourite || false,
-            isCompleted: rest.isCompleted || false,
-            price: rest.price || 0,
+            ...rest,
+            date: new Date(rest.date).getTime(),
         };
         await setDoc(itemDoc(uid), {[item.id]: item}, {merge: true});
         return item;
@@ -83,11 +81,14 @@ const slice = createSlice({
     name: NAME,
     initialState,
     reducers: {
-        changeItem: (state, {payload}: PayloadAction<PutEntity<Item>>) => {
-            const item = state.dataSource.find((g) => g.id === payload.id);
-            if (item) {
-                item[payload.property] = payload.value as never;
-            }
+        changeItem: (state, {payload}: PayloadAction<Item>) => {
+            state.dataSource = state.dataSource.map((i) => ({
+                ...i,
+                ...(i.id === payload.id && {
+                    ...payload,
+                    date: new Date(payload.date).getTime(),
+                }),
+            }));
         },
     },
     extraReducers: (builder) => {
