@@ -11,7 +11,7 @@ const CurrencySelector: React.FC<Props> = () => {
 
     useEffect(() => {
         dispatch(getCurrency());
-    }, [dispatch]);
+    }, []);
 
     return <Button>{+price.toFixed(2)} UAH</Button>;
 };

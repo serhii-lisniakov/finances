@@ -91,7 +91,6 @@ const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
 export const IncomesExpenses: React.FC = () => {
     const uid = useWithUID();
     const {dataSource} = useAppSelector((state) => state.incomesExpenses);
-    const {price} = useAppSelector((state) => state.currency);
     const dispatch = useAppDispatch();
     const dataGrid = useRef<DataGrid>(null);
     const {t} = useTranslation();
