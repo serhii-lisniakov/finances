@@ -2,13 +2,11 @@ import React, {useMemo, useState} from "react";
 import "./Navigation.css";
 import {Tabs, Item} from "devextreme-react/tabs";
 import {useNavigate} from "react-router-dom";
-import {useTranslation} from "react-i18next";
 import {Icon} from "../../components/Icon";
 import i18n from "../../i18n";
 
 export const Navigation: React.FC = () => {
     const navigate = useNavigate();
-    const {t} = useTranslation();
     const [selectedIndex, setSelectedIndex] = useState<number>(0);
 
     const tabs = useMemo(
