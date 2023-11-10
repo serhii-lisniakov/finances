@@ -46,11 +46,6 @@ const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
     }
 };
 
-const changeStatus = (e: ColumnCellTemplateData<Goal, Goal>) => {
-    e.component.cellValue(e.row.rowIndex, e.column.dataField!, !e.value);
-    e.component.saveEditData();
-};
-
 export const Goals: React.FC = () => {
     const uid = useWithUID();
     const {dataSource} = useAppSelector((state) => state.goals);
