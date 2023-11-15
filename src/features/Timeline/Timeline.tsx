@@ -128,6 +128,8 @@ export const Timeline = () => {
                         displayFormat="MMM dd yyyy"
                         className="!mt-0"
                         showClearButton={true}
+                        startDateLabel={tF("startDate")}
+                        endDateLabel={tF("endDate")}
                     />
                 </Item>
                 <Item

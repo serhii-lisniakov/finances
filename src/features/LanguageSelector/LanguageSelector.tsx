@@ -1,28 +1,21 @@
-import React, {useEffect, useState} from "react";
-import i18n, {resources} from "../../i18n";
+import React from "react";
 import {DropDownButton} from "devextreme-react/drop-down-button";
-
-const changeLanguage = (lang: string) => {
-    localStorage.setItem("lang", lang);
-    i18n.changeLanguage(lang);
-};
-
-const LANGUAGES = Object.keys(resources).map((lang) => lang.toUpperCase());
+import {useLocale} from "../../hooks/useLocale";
 
 export const LanguageSelector: React.FC = () => {
-    const [lang, setLang] = useState<string>(i18n.language);
+    const {lang, setLang, changeLocale, locales} = useLocale();
 
     return (
         <DropDownButton
-            text={lang}
+            text={lang.label}
             icon="globe"
-            items={LANGUAGES}
+            items={locales}
             onItemClick={(e) => {
-                const lang = e.itemData.toLowerCase();
-                changeLanguage(lang);
+                const lang = e.itemData;
+                changeLocale(lang);
                 setLang(lang);
             }}
-            className="uppercase"
+            displayExpr="label"
             showArrowIcon={false}
         />
     );

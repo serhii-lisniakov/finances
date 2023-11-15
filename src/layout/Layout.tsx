@@ -2,8 +2,10 @@ import React from "react";
 import {Outlet} from "react-router-dom";
 import {Navigation} from "../features/Navigation/Navigation";
 import {useMediaQuery} from "../hooks/useMediaQuery";
+import {useLocale} from "../hooks/useLocale";
 
 export const Layout: React.FC = () => {
+    useLocale(true);
     const mobile = useMediaQuery("lg");
     const className = mobile
         ? "grid-rows-[minmax(100px,_1fr)_auto]"

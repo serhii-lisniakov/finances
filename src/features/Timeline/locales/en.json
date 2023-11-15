@@ -1,4 +1,6 @@
 {
     "title": "Timeline",
-    "noDataText": "Start adding right now..."
+    "noDataText": "Start adding right now...",
+    "startDate": "Start Date",
+    "endDate": "End Date"
 }

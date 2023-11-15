@@ -30,7 +30,6 @@ export const defaultNS = "common";
 i18n.use(initReactI18next).init({
     fallbackLng: "en",
     debug: true,
-    lng: (localStorage.getItem("lang") as string) || "en",
     defaultNS,
     resources,
 });
