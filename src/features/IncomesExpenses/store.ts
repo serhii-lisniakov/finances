@@ -14,7 +14,7 @@ const NAME = "incomes_expenses";
 
 type IUID = {uid: UID};
 
-type CreateItem = IUID & Partial<Omit<Item, "id">>;
+type CreateItem = IUID & Omit<Item, "id">;
 
 type UpdateItem = IUID & {id: number};
 
@@ -42,11 +42,8 @@ export const addItem = createAsyncThunk<Item | null, CreateItem>(
         }
         const item: Item = {
             id: new Date().getTime(),
-            title: rest.title || "",
-            isExpense: rest.isExpense || false,
-            isDisabled: rest.isDisabled || false,
-            taxesPercent: rest.taxesPercent || 0,
-            price: rest.price || 0,
+            ...rest,
+            startDate: rest.startDate || new Date().getTime(),
         };
         await setDoc(itemDoc(uid), {[item.id]: item}, {merge: true});
         return item;

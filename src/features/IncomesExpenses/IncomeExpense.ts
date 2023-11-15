@@ -5,6 +5,6 @@ export type IncomeExpense = {
     isExpense: boolean;
     isDisabled: boolean;
     taxesPercent: number;
-    dayOfMonth?: number;
-    startDate?: number;
+    dayOfMonth: number;
+    startDate: number;
 };

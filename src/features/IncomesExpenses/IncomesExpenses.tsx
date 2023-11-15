@@ -27,6 +27,7 @@ import {
 } from "devextreme/ui/data_grid";
 import {Icon} from "../../components/Icon";
 import {useTableToggle} from "../../hooks/useTableToggle";
+import {calcTotals} from "./calcTotals";
 
 const onCellPrepared = (e: CellPreparedEvent<IncomeExpense, number>) => {
     if (e.rowType !== "data") {
@@ -57,7 +58,7 @@ const onEditorPreparing = (e: EditorPreparingEvent<IncomeExpense, number>) => {
     }
 };
 
-const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
+const calculateTotals = (options: CustomSummaryInfo & {dataSource: IncomeExpense[]}) => {
     const totalName = options.name;
     const start = options.summaryProcess === "start";
     const calc = options.summaryProcess === "calculate";
@@ -66,26 +67,20 @@ const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
 
     if (start) {
         options.totalValue = 0;
-        options.totals = {
-            incomes: 0,
-            expenses: 0,
-        };
+        options.dataSource = [];
+    }
+
+    if (calc) {
+        options.dataSource.push(item);
     }
 
     switch (true) {
-        case totalName === "incomes" && calc:
-            options.totalValue +=
-                item.isDisabled || item.isExpense
-                    ? 0
-                    : item.price - item.price * (item.taxesPercent || 1);
-            break;
         case totalName === "incomes" && finalize:
+            options.totalValue = calcTotals(options.dataSource).incomes;
             break;
 
-        case totalName === "expenses" && calc:
-            options.totalValue += item.isDisabled || item.isExpense ? item.price : 0;
-            break;
         case totalName === "expenses" && finalize:
+            options.totalValue = calcTotals(options.dataSource).expenses;
             break;
     }
 };
@@ -244,7 +239,6 @@ export const IncomesExpenses: React.FC = () => {
                     format: "percent",
                     useMaskBehaviour: true,
                 }}
-                format="percent"
                 width={50}
                 visible={false}
                 formItem={{

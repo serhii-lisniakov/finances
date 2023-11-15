@@ -4,7 +4,10 @@ import {
     Column,
     DataGrid,
     Editing,
+    GroupItem,
     Item,
+    SortByGroupSummaryInfo,
+    Summary,
     Toolbar,
 } from "devextreme-react/data-grid";
 import DateRangeBox from "devextreme-react/date-range-box";
@@ -13,13 +16,14 @@ import {useTranslation} from "react-i18next";
 import {useWithUID} from "../../hooks/useWithUID";
 import {useAppDispatch, useAppSelector} from "../../hook";
 import CustomStore from "devextreme/data/custom_store";
-import {addItem, changeItem, deleteItem, getDataSource, updateItem} from "./store";
-import {TimelineItem} from "./TimelineItem";
-import {InitNewRowEvent} from "devextreme/ui/data_grid";
-import {addMonths, startOfToday} from "date-fns";
+import {addItem, changeItem, deleteItem, getDataSource as getTimelines, updateItem} from "./store";
+import {getDataSource as getIncomesExpenses} from "../IncomesExpenses/store";
+import {CellPreparedEvent, InitNewRowEvent} from "devextreme/ui/data_grid";
+import {addMonths, format, startOfToday} from "date-fns";
 import {LocalStorage} from "../../enums/LocalStorage";
+import {getMappedTimelines, MappedTimeline} from "./getMappedTimelines";
 
-const defaultRange: [Date, Date] = [startOfToday(), addMonths(startOfToday(), 3)];
+const defaultRange: [Date, Date] = [startOfToday(), addMonths(startOfToday(), 6)];
 
 const getRange = (): [Date, Date] => {
     const prevInitialRange = localStorage.getItem(LocalStorage.DateRange);
@@ -31,16 +35,20 @@ const getRange = (): [Date, Date] => {
     return [new Date(initialRange[0]), new Date(initialRange[1])];
 };
 
-const onInitNewRow = (e: InitNewRowEvent<TimelineItem>) => {
+const onInitNewRow = (e: InitNewRowEvent<MappedTimeline>) => {
     e.data.amount = 0;
     e.data.repeat = 0;
     e.data.date = new Date().getTime();
 };
 
-const processDataSource = (data: TimelineItem[]) => {
-    return data.map((i) => {
-        return i;
-    });
+const onCellPrepared = (e: CellPreparedEvent<MappedTimeline, number>) => {
+    if (e.rowType !== "data") {
+        return;
+    }
+
+    if (!e.data.isExpense) {
+        e.cellElement.classList.add("text-green-500", "font-bold");
+    }
 };
 
 export const Timeline = () => {
@@ -54,11 +62,11 @@ export const Timeline = () => {
 
     const customDataSource = useMemo(
         () =>
-            new CustomStore<TimelineItem, number>({
+            new CustomStore<MappedTimeline, number>({
                 key: "id",
                 loadMode: "raw",
                 load: () => {
-                    return processDataSource(dataSource);
+                    return getMappedTimelines(dataSource, incomes_expenses);
                 },
                 insert: async (values) => {
                     await dispatch(addItem({...values, ...uid}));
@@ -72,11 +80,12 @@ export const Timeline = () => {
                     dispatch(deleteItem({id, ...uid}));
                 },
             }),
-        [dataSource],
+        [dataSource, incomes_expenses],
     );
 
     useEffect(() => {
-        dispatch(getDataSource(uid.uid));
+        dispatch(getIncomesExpenses(uid.uid));
+        dispatch(getTimelines(uid.uid));
     }, []);
 
     const datePicketChange = useCallback(
@@ -91,16 +100,19 @@ export const Timeline = () => {
     return (
         <DataGrid
             onInitNewRow={onInitNewRow}
+            onCellPrepared={onCellPrepared}
             dataSource={customDataSource}
             rowAlternationEnabled={true}
             showBorders={false}
             showRowLines={true}
             showColumnLines={false}
             height="100%"
-            columnAutoWidth={true}
             repaintChangesOnly
             noDataText={tF("noDataText")}
             wordWrapEnabled={true}
+            paging={{
+                pageSize: 100,
+            }}
         >
             <Toolbar>
                 <Item location="before">
@@ -140,14 +152,23 @@ export const Timeline = () => {
                 dataField="date"
                 caption={t("date")}
                 dataType="date"
-                format="MMM dd yyyy"
+                format="dd MMM"
                 filterValue={dates}
                 selectedFilterOperation="between"
                 sortOrder="asc"
                 editorOptions={{
+                    displayFormat: "MMM dd yyyy",
                     useMaskBehavior: true,
                 }}
                 validationRules={[{type: "required"}]}
+                showWhenGrouped={true}
+                groupIndex={0}
+                calculateGroupValue={(row) => format(row.date, "MMMM yyyy")}
+                groupCellRender={(data) => data.data.key}
+                width={90}
+                formItem={{
+                    label: {text: t("start")},
+                }}
             />
             <Column
                 dataField="amount"
@@ -169,9 +190,11 @@ export const Timeline = () => {
             <Column
                 caption=""
                 type="buttons"
-                width={54}
+                width={60}
+                alignment="right"
             >
                 <GridButton
+                    visible={({row}) => row.data.id}
                     name="edit"
                     cssClass="dx-theme-text-color !mx-0"
                 />
@@ -180,6 +203,27 @@ export const Timeline = () => {
                     cssClass="!text-red-500 !mx-0"
                 />
             </Column>
+
+            <Summary>
+                <GroupItem
+                    column="groupDateSort"
+                    showInGroupFooter={false}
+                    summaryType="min"
+                />
+            </Summary>
+            <Column
+                dataType="date"
+                allowExporting={false}
+                calculateCellValue={(row) => row.date}
+                name="groupDateSort"
+                showInColumnChooser={false}
+                visible={false}
+                formItem={{
+                    visible: false,
+                }}
+                sortOrder="asc"
+            />
+            <SortByGroupSummaryInfo summaryItem="groupDateSort" />
         </DataGrid>
     );
 };
