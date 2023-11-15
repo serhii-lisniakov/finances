@@ -10,7 +10,6 @@ import {getDataSource as getIncomes} from "../IncomesExpenses/store";
 export const Totals: React.FC = () => {
     const {t} = useTranslation();
     const {dataSource} = useAppSelector((state) => state.incomes_expenses);
-    const {dataSource: s} = useAppSelector((state) => state.savings);
     const uid = useWithUID();
     const dispatch = useAppDispatch();
 
@@ -26,7 +25,6 @@ export const Totals: React.FC = () => {
 
     const expenses = dataSource.reduce((acc, i) => (acc += i.isExpense ? i.price : 0), 0);
     const PnL = incomes - expenses;
-    const savings = s.reduce((acc, i) => (acc += i.amount), 0);
 
     return (
         <div className="totals p-2">

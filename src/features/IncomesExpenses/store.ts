@@ -1,5 +1,4 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {PutEntity} from "../../models/PutEntity";
 import {UID} from "../../models/UID";
 import {IncomeExpense} from "./IncomeExpense";
 import {deleteField, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
@@ -84,11 +83,16 @@ const slice = createSlice({
     name: NAME,
     initialState,
     reducers: {
-        changeItem: (state, {payload}: PayloadAction<PutEntity<Item>>) => {
-            const goal = state.dataSource.find((g) => g.id === payload.id);
-            if (goal) {
-                goal[payload.property] = payload.value as never;
+        changeItem: (state, {payload}: PayloadAction<Item>) => {
+            const item = state.dataSource.find((g) => g.id === payload.id);
+            if (!item) {
+                return;
             }
+            Object.assign(item, {
+                ...item,
+                ...payload,
+                ...("startDate" in payload && {startDate: new Date(payload.startDate!).getTime()}),
+            });
         },
     },
     extraReducers: (builder) => {

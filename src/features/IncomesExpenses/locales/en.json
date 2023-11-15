@@ -1,4 +1,6 @@
 {
   "title": "Incomes/Expenses",
-  "noDataText": "You have no payments. A lucky one!"
+  "noDataText": "You have no payments. A lucky one!",
+  "repeat": "Repeat on",
+  "dayOfMonth": "day of month"
 }

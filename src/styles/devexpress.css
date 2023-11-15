@@ -24,3 +24,12 @@
     font-weight: 500;
     color: #f59e0b !important;
 }
+
+.dx-layout-manager.dx-layout-manager-one-col .dx-box-item:not(:first-child) .dx-single-column-item-content > .dx-field-item {
+    padding-top: 5px;
+}
+
+.dx-datagrid-headers .dx-texteditor-input, .dx-datagrid-rowsview .dx-texteditor-input {
+    padding: 3px 7px;
+    min-height: 28px;
+}

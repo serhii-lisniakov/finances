@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {TimelineItem} from "./TimelineItem";
-import {PutEntity} from "../../models/PutEntity";
 import {deleteField, doc, getDoc, setDoc, updateDoc} from "firebase/firestore";
 import {UID} from "../../models/UID";
 import {db} from "../../firebase";
@@ -82,13 +81,15 @@ const slice = createSlice({
     initialState,
     reducers: {
         changeItem: (state, {payload}: PayloadAction<Item>) => {
-            state.dataSource = state.dataSource.map((i) => ({
-                ...i,
-                ...(i.id === payload.id && {
-                    ...payload,
-                    date: new Date(payload.date).getTime(),
-                }),
-            }));
+            const item = state.dataSource.find((i) => i.id === payload.id);
+            if (!item) {
+                return;
+            }
+            Object.assign(item, {
+                ...item,
+                ...payload,
+                ...("date" in payload && {date: new Date(payload.date).getTime()}),
+            });
         },
     },
     extraReducers: (builder) => {

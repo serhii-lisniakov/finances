@@ -1,5 +1,4 @@
 import React, {useEffect, useMemo} from "react";
-import "./styles.css";
 import {useAppDispatch, useAppSelector} from "../../hook";
 import {addItem, changeItem, deleteItem, getDataSource, updateItem} from "./store";
 import {
@@ -12,6 +11,7 @@ import {
     Toolbar,
     TotalItem,
 } from "devextreme-react/data-grid";
+import {CheckBox} from "devextreme-react/check-box";
 import {IncomeExpense} from "./IncomeExpense";
 import CustomStore from "devextreme/data/custom_store";
 import {useWithUID} from "../../hooks/useWithUID";
@@ -21,10 +21,13 @@ import {
     CellPreparedEvent,
     ColumnCellTemplateData,
     CustomSummaryInfo,
+    EditingStartEvent,
     EditorPreparingEvent,
+    InitNewRowEvent,
 } from "devextreme/ui/data_grid";
 import {Icon} from "../../components/Icon";
 import {useTableToggle} from "../../hooks/useTableToggle";
+import {TimelineItem} from "../Timeline/TimelineItem";
 
 const onCellPrepared = (e: CellPreparedEvent<IncomeExpense, number>) => {
     if (e.rowType !== "data") {
@@ -39,7 +42,7 @@ const onCellPrepared = (e: CellPreparedEvent<IncomeExpense, number>) => {
     if (
         !e.data.isExpense &&
         e.data.price &&
-        (e.column.dataField as keyof IncomeExpense) !== "taxesPercent"
+        !["taxesPercent", "date"].includes(e.column.dataField as keyof IncomeExpense)
     ) {
         e.cellElement.classList.add("text-green-500");
     }
@@ -88,6 +91,17 @@ const calculateTotals = (options: CustomSummaryInfo & {totals: any}) => {
     }
 };
 
+const onInitNewRow = (e: InitNewRowEvent<IncomeExpense>) => {
+    e.data.startDate = new Date().getTime();
+    e.data.dayOfMonth = new Date().getDate();
+};
+
+const onEditingStart = (e: EditingStartEvent<IncomeExpense, number>) => {
+    if (e.data.isExpense) {
+        e.component.columnOption("taxesPercent").formItem.visible = false;
+    }
+};
+
 export const IncomesExpenses: React.FC = () => {
     const uid = useWithUID();
     const {dataSource} = useAppSelector((state) => state.incomes_expenses);
@@ -109,8 +123,7 @@ export const IncomesExpenses: React.FC = () => {
                     return c;
                 },
                 update: async (id, values) => {
-                    const property = Object.keys(values)[0] as keyof IncomeExpense;
-                    dispatch(changeItem({id, value: values[property], property}));
+                    dispatch(changeItem({...values, id}));
                     await dispatch(updateItem({id, ...uid}));
                 },
                 remove: async (id) => {
@@ -128,6 +141,8 @@ export const IncomesExpenses: React.FC = () => {
         <DataGrid
             onCellPrepared={onCellPrepared}
             onEditorPreparing={onEditorPreparing}
+            onEditingStart={onEditingStart}
+            onInitNewRow={onInitNewRow}
             dataSource={customDataSource}
             rowAlternationEnabled={true}
             showBorders={false}
@@ -136,7 +151,6 @@ export const IncomesExpenses: React.FC = () => {
             height="100%"
             repaintChangesOnly
             noDataText={tC("noDataText")}
-            className="incomes"
             wordWrapEnabled={true}
         >
             <Toolbar>
@@ -146,21 +160,35 @@ export const IncomesExpenses: React.FC = () => {
                 <Item name="addRowButton" />
             </Toolbar>
             <Editing
-                mode="cell"
+                mode="form"
                 allowUpdating={true}
                 allowAdding={true}
                 allowDeleting={true}
                 confirmDelete={true}
                 useIcons={true}
+                texts={{
+                    cancelRowChanges: t("actions.cancel"),
+                    saveRowChanges: t("actions.save"),
+                }}
             />
             <Column
                 allowSorting={false}
-                alignment="center"
                 calculateSortValue={(e: IncomeExpense) => (e.isDisabled ? 999 : 0)}
+                cssClass="!align-top"
                 caption=""
                 dataField="isDisabled"
                 width={30}
                 sortOrder="asc"
+                cellRender={(e: ColumnCellTemplateData<IncomeExpense, IncomeExpense>) => (
+                    <CheckBox
+                        onValueChange={() => toggle(e)}
+                        value={!e.data!.isDisabled}
+                        iconSize={16}
+                    />
+                )}
+                formItem={{
+                    visible: false,
+                }}
             />
             <Column
                 allowEditing={false}
@@ -168,7 +196,7 @@ export const IncomesExpenses: React.FC = () => {
                 alignment="center"
                 calculateSortValue={(e: IncomeExpense) => (e.isExpense ? 1 : 0)}
                 caption=""
-                cssClass="!px-0 !align-middle"
+                cssClass="!px-0"
                 dataField="isExpense"
                 width={20}
                 cellRender={(e: ColumnCellTemplateData<IncomeExpense, IncomeExpense>) =>
@@ -181,15 +209,22 @@ export const IncomesExpenses: React.FC = () => {
                     )
                 }
                 sortOrder="asc"
+                formItem={{
+                    visible: false,
+                }}
             />
             <Column
                 dataField="title"
                 caption={t("name")}
                 dataType="string"
+                validationRules={[{type: "required"}]}
+                formItem={{
+                    isRequired: true,
+                }}
             />
             <Column
                 dataField="price"
-                caption="Amount"
+                caption={t("amount")}
                 dataType="number"
                 editorOptions={{
                     format: "currency",
@@ -203,7 +238,7 @@ export const IncomesExpenses: React.FC = () => {
             <Column
                 allowSorting={false}
                 dataField="taxesPercent"
-                caption="Tax"
+                caption={t("tax")}
                 calculateDisplayValue={(e: IncomeExpense) => (e.isExpense ? "" : e.taxesPercent)}
                 dataType="number"
                 editorOptions={{
@@ -212,15 +247,44 @@ export const IncomesExpenses: React.FC = () => {
                 }}
                 format="percent"
                 width={50}
+                visible={false}
+                formItem={{
+                    visible: true,
+                }}
+            />
+            <Column
+                caption={t("start")}
+                dataField="startDate"
+                dataType="date"
+                format="MMM dd yyyy"
+                editorOptions={{
+                    useMaskBehavior: true,
+                }}
+                visible={false}
+            />
+            <Column
+                caption={tC("repeat")}
+                dataField="dayOfMonth"
+                dataType="number"
+                editorOptions={{
+                    min: 1,
+                    max: 31,
+                    format: `#0 ${tC("dayOfMonth")}`,
+                }}
+                visible={false}
             />
             <Column
                 caption=""
                 type="buttons"
-                width={40}
+                width={54}
             >
                 <GridButton
+                    name="edit"
+                    cssClass="dx-theme-text-color !mx-0"
+                />
+                <GridButton
                     name="delete"
-                    cssClass="!text-red-500"
+                    cssClass="!text-red-500 !mx-0"
                 />
             </Column>
 

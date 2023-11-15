@@ -84,7 +84,7 @@ export const Savings = () => {
             />
             <Column
                 dataField="amount"
-                caption="Amount"
+                caption={t("amount")}
                 dataType="number"
                 editorOptions={{
                     format: "currency",

@@ -1,13 +1,13 @@
-import React, {useEffect, useMemo} from "react";
+import React, {useCallback, useEffect, useMemo, useState} from "react";
 import {
     Button as GridButton,
     Column,
     DataGrid,
     Editing,
     Item,
-    Lookup,
     Toolbar,
 } from "devextreme-react/data-grid";
+import DateRangeBox from "devextreme-react/date-range-box";
 import {DataGridMobileTitle} from "../../components/DataGridMobileTitle";
 import {useTranslation} from "react-i18next";
 import {useWithUID} from "../../hooks/useWithUID";
@@ -16,7 +16,20 @@ import CustomStore from "devextreme/data/custom_store";
 import {addItem, changeItem, deleteItem, getDataSource, updateItem} from "./store";
 import {TimelineItem} from "./TimelineItem";
 import {InitNewRowEvent} from "devextreme/ui/data_grid";
-import {onCustomItemCreating} from "../../@functions/onCustomItemCreated";
+import {addMonths, startOfToday} from "date-fns";
+import {LocalStorage} from "../../enums/LocalStorage";
+
+const defaultRange: [Date, Date] = [startOfToday(), addMonths(startOfToday(), 3)];
+
+const getRange = (): [Date, Date] => {
+    const prevInitialRange = localStorage.getItem(LocalStorage.DateRange);
+    if (!prevInitialRange) {
+        return defaultRange;
+    }
+
+    const initialRange: [string, string] = JSON.parse(prevInitialRange);
+    return [new Date(initialRange[0]), new Date(initialRange[1])];
+};
 
 const onInitNewRow = (e: InitNewRowEvent<TimelineItem>) => {
     e.data.amount = 0;
@@ -37,6 +50,7 @@ export const Timeline = () => {
     const {dataSource} = useAppSelector((state) => state.timelines);
     const {dataSource: incomes_expenses} = useAppSelector((state) => state.incomes_expenses);
     const dispatch = useAppDispatch();
+    const [dates, setDates] = useState<[Date, Date]>(getRange());
 
     const customDataSource = useMemo(
         () =>
@@ -65,6 +79,15 @@ export const Timeline = () => {
         dispatch(getDataSource(uid.uid));
     }, []);
 
+    const datePicketChange = useCallback(
+        (e: [Date, Date]) => {
+            const dates = e.filter(Boolean).length ? e : defaultRange;
+            setDates(dates);
+            localStorage.setItem(LocalStorage.DateRange, JSON.stringify(dates));
+        },
+        [setDates],
+    );
+
     return (
         <DataGrid
             onInitNewRow={onInitNewRow}
@@ -83,10 +106,24 @@ export const Timeline = () => {
                 <Item location="before">
                     <DataGridMobileTitle>{tF("title")}</DataGridMobileTitle>
                 </Item>
-                <Item name="addRowButton" />
+                <Item location="before">
+                    <DateRangeBox
+                        // @ts-ignore
+                        onValueChange={datePicketChange}
+                        value={dates}
+                        width={290}
+                        displayFormat="MMM dd yyyy"
+                        className="!mt-0"
+                        showClearButton={true}
+                    />
+                </Item>
+                <Item
+                    name="addRowButton"
+                    locateInMenu="never"
+                />
             </Toolbar>
             <Editing
-                mode="popup"
+                mode="form"
                 allowUpdating={true}
                 allowAdding={true}
                 allowDeleting={true}
@@ -94,42 +131,19 @@ export const Timeline = () => {
                 useIcons={true}
             />
             <Column
-                caption=""
-                dataField="edit"
-                type="buttons"
-                width={30}
-            >
-                <GridButton
-                    name="edit"
-                    cssClass="!text-violet-500"
-                />
-            </Column>
-            <Column
                 dataField="title"
-                calculateDisplayValue={(i: TimelineItem) => i.title}
                 caption={t("name")}
                 dataType="string"
                 validationRules={[{type: "required"}]}
-                editorOptions={{
-                    onCustomItemCreating,
-                    acceptCustomValue: true,
-                }}
-            >
-                <Lookup
-                    dataSource={{
-                        store: incomes_expenses,
-                        sort: ["title"],
-                    }}
-                    displayExpr="title"
-                    valueExpr="title"
-                />
-            </Column>
+            />
             <Column
                 dataField="date"
                 caption={t("date")}
                 dataType="date"
-                format="monthAndDay"
-                sortOrder="desc"
+                format="MMM dd yyyy"
+                filterValue={dates}
+                selectedFilterOperation="between"
+                sortOrder="asc"
                 editorOptions={{
                     useMaskBehavior: true,
                 }}
@@ -137,7 +151,7 @@ export const Timeline = () => {
             />
             <Column
                 dataField="amount"
-                caption="Amount"
+                caption={t("amount")}
                 dataType="number"
                 editorOptions={{
                     format: "currency",
@@ -155,12 +169,15 @@ export const Timeline = () => {
             <Column
                 caption=""
                 type="buttons"
-                dataField="delete"
-                width={40}
+                width={54}
             >
                 <GridButton
+                    name="edit"
+                    cssClass="dx-theme-text-color !mx-0"
+                />
+                <GridButton
                     name="delete"
-                    cssClass="!text-red-500"
+                    cssClass="!text-red-500 !mx-0"
                 />
             </Column>
         </DataGrid>

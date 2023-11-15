@@ -43,8 +43,8 @@ export const Mobile: React.FC = () => {
                 scrollingEnabled={false}
             >
                 <Item
-                    title={t("title", {ns: "feature_savings"})}
-                    component={Savings}
+                    title={t("title", {ns: "feature_timeline"})}
+                    component={Timeline}
                 />
                 <Item
                     title={t("title", {ns: "feature_goals"})}
@@ -55,8 +55,8 @@ export const Mobile: React.FC = () => {
                     component={IncomesExpenses}
                 />
                 <Item
-                    title={t("title", {ns: "feature_timeline"})}
-                    component={Timeline}
+                    title={t("title", {ns: "feature_savings"})}
+                    component={Savings}
                 />
             </TabPanel>
         </div>

@@ -1,4 +1,8 @@
 {
+    "actions": {
+        "save": "Save",
+        "cancel": "Cancel"
+    },
     "currency": "USD",
     "date": "Date",
     "loading": "Loading",
@@ -15,5 +19,8 @@
     "month": "Month",
     "home": "Home",
     "settings": "Settings",
-    "price": "Price"
+    "price": "Price",
+    "amount": "Amount",
+    "start": "Start",
+    "tax": "Taxes"
 }
