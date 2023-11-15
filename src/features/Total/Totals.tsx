@@ -19,7 +19,7 @@ export const Totals: React.FC = () => {
         dispatch(getIncomes(uid.uid));
     }, []);
 
-    const totals: any = useMemo(() => calcTotals(dataSource), [dataSource]);
+    const state: any = useMemo(() => calcTotals(dataSource), [dataSource]);
 
     return (
         <div className="totals p-2">
@@ -34,14 +34,14 @@ export const Totals: React.FC = () => {
                         <NumberBox
                             format="currency"
                             className="flex-grow"
-                            value={totals.incomes}
+                            value={state.incomes}
                             label={`${t("total_one")} ${t("income")}`}
                             readOnly
                         />
                         <NumberBox
                             format="currency"
                             className="flex-grow"
-                            value={totals.expenses}
+                            value={state.expenses}
                             label={`${t("total", {count: 2})} ${t("expenses")}`}
                             readOnly
                         />
@@ -52,7 +52,7 @@ export const Totals: React.FC = () => {
                         <NumberBox
                             format="currency"
                             className="flex-grow tracking-widest"
-                            value={totals.PnL}
+                            value={state.PnL}
                             label="P&L"
                             readOnly
                         />

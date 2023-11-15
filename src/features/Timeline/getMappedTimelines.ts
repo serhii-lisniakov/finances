@@ -1,6 +1,7 @@
 import {TimelineItem} from "./TimelineItem";
 import {IncomeExpense} from "../IncomesExpenses/IncomeExpense";
 import {addMonths, differenceInMonths, format, setDate} from "date-fns";
+import {calcTaxes} from "../IncomesExpenses/calcTotals";
 
 export type MappedTimeline = TimelineItem & {
     isExpense: boolean;
@@ -37,7 +38,7 @@ export function getMappedTimelines(
                 .map((_, i) => ({
                     id: 0,
                     title: income.title,
-                    amount: income.price - income.price * (income.taxesPercent || 0),
+                    amount: calcTaxes(income),
                     date: addMonths(setDate(income.startDate, income.dayOfMonth), i).getTime(),
                     repeat: 0,
                     isExpense: income.isExpense,
@@ -70,8 +71,10 @@ type MapperParams = {
     title: string;
 };
 
-function mapIncomeToTimeline({data, isExpense, title}: MapperParams): MappedTimeline[] {
-    return data.reduce((a: any, i) => {
+type MapperResult = {[date in string]: MappedTimeline};
+
+function mapIncomeToTimeline({data, isExpense, title}: MapperParams): MapperResult {
+    return data.reduce((a: MapperResult, i) => {
         const key = format(i.date, "dd MMM yyyy");
 
         a[key] = {

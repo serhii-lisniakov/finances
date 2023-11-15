@@ -9,6 +9,7 @@ import "./global.css";
 import "./devexpress.css";
 
 import themes from "devextreme/ui/themes";
+import localization from "devextreme/localization";
 import {Themes} from "../enums/Themes";
 
 export const enableTheme = (theme: Themes) => {

@@ -107,6 +107,7 @@ export const Timeline = () => {
             showRowLines={true}
             showColumnLines={false}
             height="100%"
+            columnAutoWidth={true}
             repaintChangesOnly
             noDataText={tF("noDataText")}
             wordWrapEnabled={true}
@@ -180,7 +181,6 @@ export const Timeline = () => {
                 }}
                 format="currency"
                 alignment="right"
-                width={100}
             />
             <Column
                 dataField="repeat"
