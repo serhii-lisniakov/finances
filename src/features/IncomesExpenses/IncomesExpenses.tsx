@@ -27,7 +27,6 @@ import {
 } from "devextreme/ui/data_grid";
 import {Icon} from "../../components/Icon";
 import {useTableToggle} from "../../hooks/useTableToggle";
-import {TimelineItem} from "../Timeline/TimelineItem";
 
 const onCellPrepared = (e: CellPreparedEvent<IncomeExpense, number>) => {
     if (e.rowType !== "data") {
